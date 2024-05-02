@@ -91,7 +91,7 @@ export const postUserLogin = async (credentials: { email: string; password: stri
         'Content-Type': 'application/json',
       },
     });
-    console.log('Connexion réussie !');
+    
 
     // Enregistrer le token dans le stockage local
     saveTokenToStorage(response.data.token);

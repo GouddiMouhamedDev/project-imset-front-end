@@ -7,25 +7,35 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import {AlertDialog,AlertDialogAction,AlertDialogCancel,AlertDialogContent,
+  AlertDialogDescription,AlertDialogFooter,AlertDialogHeader,AlertDialogTitle,
+  AlertDialogTrigger,} from "@/components/ui/alert-dialog"
 interface UserLoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const router = useRouter();
+  const [msg, setMsg] = React.useState<string>("");
+  const [msgTitle, setMsgTitle] = React.useState<string>("");
 
+
+
+
+  //submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-
+   
     const formData = new FormData(event.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
     try {
       // Authentification de l'utilisateur
-      const loginResponse = await postUserLogin({ email, password });
+      const loginResponse = await postUserLogin({ email, password }); 
       if (!loginResponse) {
+        setMsgTitle("échec de connexion");
+        setMsg("Le mot de passe ou l'adresse email est incorrect");
         throw new Error('Erreur lors de la connexion');
       }
 
@@ -36,15 +46,17 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
       }
 
       if (isTokenExpired(token)) {
-        console.log('Token expiré');
-        // Supprimer le token d'accès
-        // Rediriger l'utilisateur vers la page de connexion
-        router.push('/');
+        setMsgTitle("échec de connexion");
+        setMsg("Le token est expiré, veuillez vous reconnecter");
+      
       } else {
-        console.log('Token valide');
+        setMsgTitle("Connexion réussie");
+        setMsg(" Vous êtes connecté avec succès");
         const userRole = getUserRoleFromToken(token);
         if (userRole) {
-          router.push('/dashboard');
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 2000); 
         }
 
         // Rediriger l'utilisateur vers la page du tableau de bord
@@ -70,7 +82,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
             <Input
               id="email"
               name="email"
-              placeholder="name@example.com"
+              placeholder="nom@domain.com"
               type="email"
               autoCapitalize="none"
               autoComplete="email"
@@ -85,17 +97,34 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
             <Input
               id="password"
               name="password"
-              placeholder="password"
+              placeholder="mot de passe"
               type="password"
               disabled={isLoading}
             />
           </div>
-          <Button type="submit" disabled={isLoading}>
+          <AlertDialog>
+          <AlertDialogTrigger asChild>
+          <Button  type="submit" disabled={isLoading}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Connexion avec Email
+            se connecter
           </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+          <AlertDialogHeader>
+          <AlertDialogTitle> {msgTitle} </AlertDialogTitle>
+          <AlertDialogDescription>
+          {msg}
+          </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+          {msgTitle === "échec de connexion" && (
+    <AlertDialogCancel>réessayer</AlertDialogCancel>
+  )}
+          </AlertDialogFooter>
+          </AlertDialogContent>
+          </AlertDialog> 
         </div>
       </form>
     </div>

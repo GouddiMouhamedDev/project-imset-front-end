@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import EditIcon from './editIcone';
 import Link from 'next/link';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,AlertDialogDescription,
-    AlertDialogFooter, AlertDialogHeader,AlertDialogTitle, AlertDialogTrigger,} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+    AlertDialogDescription,AlertDialogFooter, AlertDialogHeader,AlertDialogTitle,
+     AlertDialogTrigger,} from "@/components/ui/alert-dialog";
 
 export default function MonoDataTable({ data,tabeCaptionMsg,link,handleDelete}: any) {
     if (typeof data !== 'object') {
