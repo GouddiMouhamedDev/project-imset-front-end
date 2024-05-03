@@ -6,7 +6,7 @@ export default function SearchBar() {
     <div className="relative w-80">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-500 left-3"
+        className="absolute top-0 bottom-0 w-6 h-6 my-auto  left-3"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

@@ -28,7 +28,7 @@ export default function     MultiDataTable({ data,To}: any ) {
                                 <TableCell key={columnIndex}>
                                      <Link href={`/${To}/${row._id}`}>
                                             {row[header] === null ? (
-                                                <Badge className="bg-yellow-600">Null</Badge>
+                                                <Badge className="">Null</Badge>
                                             ) : typeof row[header] === 'boolean' ? (
                                                 <Badge className={`bg-${row[header] ? 'green' : 'red'}-600 hover`} variant="default">
                                                     {row[header] ? 'Active' : 'Inactive'}

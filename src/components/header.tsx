@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {DropdownMenu,DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator,DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
   import { GrLogout } from "react-icons/gr";
+import { ModeToggle } from "./modeToggle";
 
 export default function Header() {
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -35,13 +36,13 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="flex justify-between items-center bg-indigo-500 rounded-lg py-4 px-8">
-      <h1 className="text-gray-50">Logo</h1>
-      <Link href={"/"} className="text-2xl font-bold text-gray-50">
+    <header className="flex justify-between items-center rounded-lg py-4 px-8">
+      <h1 className="">Logo</h1>
+      <Link href={"/"} className="text-2xl font-bold ">
         Header(dev)
       </Link>
-      <div className="flex flex-col items-center ">
-        <div>test here</div>
+      <div className="flex  items-center space-x-2 ">
+      <h2 className="">{userInfo?.name}</h2>
         <DropdownMenu >
   <DropdownMenuTrigger asChild>
     <Avatar className="border-2 hover:opacity-75">
@@ -58,6 +59,9 @@ export default function Header() {
       </Link>
      
 </DropdownMenuItem>
+
+  
+
     <DropdownMenuItem> <Link
            href="/login"
            onClick={handleLogout}
@@ -67,8 +71,8 @@ export default function Header() {
          </Link></DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>
-
-        <h2 className="text-gray-50">{userInfo?.name}</h2>
+<ModeToggle />
+       
       </div>
     </header>
   );

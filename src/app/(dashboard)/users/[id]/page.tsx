@@ -73,7 +73,7 @@ export default function OneUser({ params: { id }}: {params: { id: string }}) {
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md  justify-items-center h-full grid ">
+    <div className=" p-8 rounded-lg shadow-md  justify-items-center h-full grid ">
       <div className=" flex-col p-2">
        
       <Avatar className="border-4 w-40 h-40 hover:opacity-75 ">

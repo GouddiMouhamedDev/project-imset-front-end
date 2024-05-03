@@ -4,28 +4,32 @@ import "@/app/globals.css";
 import Header from "@/components/header";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from "next/link";
-
 import { ReactNode } from "react";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaListOl } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
-import { GrLogout } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { LuSettings } from "react-icons/lu";
 import { MdCommute, MdLockReset } from "react-icons/md";
-
+import { ThemeProvider } from "@/components/theme-provider"
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const userRole = getUserInfoFromStorage()?.role;
-  const isAdmin = ["super-admin", "admin"].includes(userRole!);
+  const isAdmin = ["super-admin", "admin","user"].includes(userRole!);
 
 
   return (
     <>
+      <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
     <Header />
     <div className="flex">
           {/*sideBar */}
-          <div className=" w-1/6 hidden md:flex flex-col p-3 bg-white shadow  h-screen ">
+          <div className=" w-1/6 hidden md:flex flex-col p-3 shadow  h-screen ">
      <div className="flex items-center">
        <h2 className="text-xl font-bold">Sidebar</h2>
      </div>
@@ -148,6 +152,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
      
  
    </div>
+   </ThemeProvider>
    </>
   );
 }

@@ -1,6 +1,6 @@
 "use client"
 import axios, { AxiosError } from 'axios';
-import { getAccessTokenFromStorage,getUserInfoFromStorage } from './auth';
+import { getAccessTokenFromStorage} from './auth';
 
 const BASE_URL="http://localhost:3000/api"
 const token=getAccessTokenFromStorage();
