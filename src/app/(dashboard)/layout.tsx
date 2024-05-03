@@ -1,5 +1,5 @@
 "use client";
-import { getUserInfoFromStorage } from "@/api/auth";
+import { getUserInfoFromStorage} from "@/api/auth";
 import "@/app/globals.css";
 import Header from "@/components/header";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -13,11 +13,13 @@ import { GrLogout } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { LuSettings } from "react-icons/lu";
 import { MdCommute, MdLockReset } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
+
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
+
+
   return (
     <>
     <Header />
@@ -39,22 +41,27 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
              <span>Dash(dev)</span>
            </Link>
          </AccordionItem>
+         
          <AccordionItem value="item-1">
+       
            <AccordionTrigger>
              <div className="flex items-center space-x-2">
                <FiUsers />
-               <span>User(in progress)</span>
+               <span>User(test here)</span>
              </div>
            </AccordionTrigger>
+          
            <AccordionContent>
-             <Link
+           {isAdmin && ( // Vérifiez si l'utilisateur a le rôle 'super-admin'
+            <>
+            <Link
                href="/users"
                className="flex items-center p-2 space-x-2 rounded-md"
              >
                <FaListOl />
                &nbsp;List
              </Link>
-             {isAdmin && ( // Vérifiez si l'utilisateur a le rôle 'super-admin'
+          
                <>
                  <Link
                    href="/users/add"
@@ -71,9 +78,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                    &nbsp;Del
                  </Link>*/}
                </>
-             )}
+               </>
+              )} 
            </AccordionContent>
+          
          </AccordionItem>
+        
          <AccordionItem value="item-2">
            <AccordionTrigger>
              <div className="flex items-center space-x-2">
@@ -125,18 +135,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
              </Link>
            </AccordionContent>
          </AccordionItem>
-         <Link
-           href="/login"
-           className="flex items-center space-x-2">
-           <GrLogout />
-           <span>Logout(dev)</span>
-         </Link>
+         
        </Accordion>
       
      </div>
    </div>
     {/*contenu principal */}
-    <div className="md:w-5/6 w-full" >
+    <div className="md:w-5/6  w-full " >
      
       {children}
     </div>

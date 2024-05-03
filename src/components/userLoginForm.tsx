@@ -40,12 +40,12 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
       }
 
       // Vérification de l'expiration du token
-      const token = getAccessTokenFromStorage();
+      const token = await getAccessTokenFromStorage();
       if (!token) {
         throw new Error('Token non disponible');
       }
 
-      if (isTokenExpired(token)) {
+      if (await isTokenExpired(token)) {
         setMsgTitle("échec de connexion");
         setMsg("Le token est expiré, veuillez vous reconnecter");
       
@@ -53,7 +53,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
         setMsgTitle("Connexion réussie");
         setMsg(" Vous êtes connecté avec succès");
         const userRole = getUserRoleFromToken(token);
-        if (userRole) {
+        if (await userRole) {
           setTimeout(() => {
             router.push('/dashboard');
           }, 2000); 

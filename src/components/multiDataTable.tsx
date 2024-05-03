@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 
 
 
-export default function MultiDataTable({ data,To}: any ) {
+export default function     MultiDataTable({ data,To}: any ) {
     const columnHeaders = Object.keys(data && data.length > 0 ? data[0] : {});
 
    

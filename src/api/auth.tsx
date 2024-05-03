@@ -1,3 +1,4 @@
+"use client"
 import { User } from '@/types/user';
 import axios, { AxiosResponse } from 'axios';
 import jwt from 'jsonwebtoken';
@@ -12,9 +13,33 @@ export interface LoginResponse {
 // URL de base de l'API
 const BASE_URL = "http://localhost:3000/api";
 
+
+// Authentification
+export const auth = (allowedRoles: (string | undefined)[]) => {
+  // Vérifie si le code s'exécute dans un environnement de navigateur
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  const userRole = getUserInfoFromStorage()?.role;
+
+  // Vérifie si l'utilisateur a l'un des rôles autorisés
+  if (!allowedRoles.includes(userRole)) {
+    // L'utilisateur n'a pas les autorisations nécessaires
+    return false;
+  }
+  
+  // L'utilisateur a les autorisations nécessaires
+  return true;
+};
+  
+
+
 // Fonction pour enregistrer le token dans le stockage local
 const saveTokenToStorage = (token: string) => {
+  if (typeof window !== 'undefined') {
   localStorage.setItem('accessToken', token);
+  }
 };
 
 // Fonction pour récupérer le token du stockage local
@@ -38,15 +63,18 @@ const saveUserInfoToStorage = (userInfo: User) => {
 
 // Fonction pour récupérer les informations de l'utilisateur depuis le stockage local
 export const getUserInfoFromStorage = (): User | null => {
-  const userInfoString = localStorage.getItem('userInfo');
-  if (userInfoString) {
-    return JSON.parse(userInfoString);
+  if (typeof window !== 'undefined') {
+    const userInfoString = localStorage.getItem('userInfo');
+    if (userInfoString) {
+      return JSON.parse(userInfoString);
+    }
   }
   return null;
 };
 
+
 // Fonction pour supprimer le token du stockage local
-export const removeAccessTokenFromStorage = (): void => {
+export const removeStorage = (): void => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userInfo');

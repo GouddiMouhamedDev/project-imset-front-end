@@ -1,5 +1,5 @@
 "use client"
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getAccessTokenFromStorage,getUserInfoFromStorage } from './auth';
 
 const BASE_URL="http://localhost:3000/api"
@@ -110,30 +110,6 @@ export const usersBulkDelete = async (userIds:[]) => {
 
 
 
-export const postOneUserData = async (userData:any) => {
-  const postOneUserDataUrl = `${BASE_URL}/users`;
-  try {
-    const response = await axios.post(postOneUserDataUrl, userData, {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': `${token}`,
-      }
-    });
-    console.log('Données envoyées avec succès !');
-    return response;
-  } catch (error) {
-
-    console.error('Une erreur s\'est produite lors de l\'envoi des données :', error);
-  }
-};
-
-
-
-
-
-
-
-
 
  export const getUserMe = async () => {
   const getUserMeUrl = `https://fleet-yuxn.onrender.com/api/auth/users/me`;
@@ -171,18 +147,47 @@ try {
 
 
 
+export const postOneUserData = async (userData: any) => {
+  const postOneUserDataUrl = `${BASE_URL}/users`;
+  try {
+    const response = await axios.post(postOneUserDataUrl, userData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': `${token}`,
+      }
+    });
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      console.error("Erreur de la requête :", axiosError.response?.data);
+      return axiosError.response;
+    } else {
+      console.error('Une erreur s\'est produite lors de l\'envoi des données :', error);
+      return error;
+    }
+  }
+};
 export const updateOneUserData = async (id: any, updatedUserData: any) => {
-  const updateOneUserDataUrl = `${BASE_URL}/users/${id}/`;
+
+  const updateOneUserDataUrl = `${BASE_URL}/users/${id}`;
  
   try {
     const response = await axios.put(updateOneUserDataUrl, updatedUserData, {
       headers: {
         'Content-Type': 'application/json',
-         'x-auth-token': `${token}`,
+        'x-auth-token': `${token}`,
       },
     });
     return response;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la mise à jour des données de l'utilisateur :", error);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      console.error("Erreur de la requête :", axiosError.response?.data);
+      return axiosError.response;
+    } else {
+      console.error("Une erreur s'est produite lors de la mise à jour des données de l'utilisateur :", error);
+      return error;
+    }
   }
 };

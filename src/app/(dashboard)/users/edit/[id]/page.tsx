@@ -4,12 +4,34 @@ import { useEffect, useState } from "react"
 import { OneUserData } from "@/interface/users"
 import { getOneUserData } from "@/api/users"
 import Blueloading from "@/components/loading"
+import { useRouter } from "next/navigation"
+import { auth, getUserInfoFromStorage, removeStorage} from "@/api/auth"
 
 
 
 export default function EditUser({ params: { id } }: { params: { id: string } } ){
   const [oneUserData, setOneUserData] = useState<OneUserData | undefined>(); 
+  const router = useRouter();
+  const userId = getUserInfoFromStorage()?._id
+ 
   
+  
+  const fetchDataAfterAuth = async () => {
+    if (id === userId) {
+      fetchData();
+    } else {
+      const isAuthenticated = auth(["admin", "super-admin"]);
+      if (isAuthenticated) {
+        fetchData(); // Exécutez fetchData si l'utilisateur est authentifié
+      } else {
+        removeStorage();
+        router.push('/login');
+      }
+    }
+  };
+
+
+
   const fetchData = async () => {
       try {
           const data = await getOneUserData(id);
@@ -21,7 +43,7 @@ export default function EditUser({ params: { id } }: { params: { id: string } } 
       
   };
   useEffect(() => {
-      fetchData();
+    fetchDataAfterAuth();
   }, []);
   if (!oneUserData) { 
     return (
@@ -36,7 +58,7 @@ export default function EditUser({ params: { id } }: { params: { id: string } } 
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Edit
+            Modifer
             </h1>
           </div>
           <UserForm customRoute="/users" data ={oneUserData} />

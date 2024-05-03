@@ -9,16 +9,19 @@ import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/searchBar";
 import Link from "next/link";
 import { User } from "@/types/user";
-import { getUserInfoFromStorage } from "@/api/auth";
+import { auth, getAccessTokenFromStorage, getUserInfoFromStorage, removeStorage } from "@/api/auth";
+import { useRouter } from "next/navigation";
 
 export default function Users() {
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
   const [usersData, setUsersData] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const router = useRouter();
   const fetchData = async () => {
     try {
+   
+      
       const data = await getUsersData();
       const formattedData = data.map((item: User) => ({
             _id: item._id,
@@ -40,8 +43,19 @@ export default function Users() {
   };
 
   useEffect(() => {
-    fetchData();
+    const fetchDataAfterAuth = async () => {
+      const isAuthenticated = auth(["admin", "super-admin"]);
+      if (isAuthenticated) {
+        fetchData();
+      }else{
+        removeStorage();
+        router.push('/login');
+      }
+    };
+  
+    fetchDataAfterAuth();
   }, []);
+  
 
   if (isLoading) {
     return <Blueloading />;
