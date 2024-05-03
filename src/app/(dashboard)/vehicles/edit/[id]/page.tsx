@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 import Blueloading from "@/components/loading"
 import { getOneVehiclesData } from "@/api/vehicles"
-import { VehicleData } from "@/interface/vehicles"
+import { VehicleData } from "@/types/vehicles"
 import { VehiclesForm } from "@/components/vehiclesForm"
 
 

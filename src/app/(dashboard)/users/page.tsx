@@ -8,30 +8,27 @@ import MultiDataTable from "@/components/multiDataTable";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/searchBar";
 import Link from "next/link";
-import { User } from "@/types/user";
+import { FormatedData, User } from "@/types/user";
 import { auth, getAccessTokenFromStorage, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { useRouter } from "next/navigation";
 
 export default function Users() {
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
-  const [usersData, setUsersData] = useState<User[]>([]);
+  const [usersData, setUsersData] = useState<FormatedData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const fetchData = async () => {
     try {
-   
-      
       const data = await getUsersData();
-      const formattedData = data.map((item: User) => ({
-            _id: item._id,
-            name: item.name,
-            email: item.email,
-            role: item.role,
-        }));
-        
-        setUsersData(formattedData);
-        
+      const formatedData: FormatedData[] = data.map((item: User) => ({
+        Id: item._id,
+        Nom: item.name,
+        Email: item.email,
+        Rôle: item.role,
+      }));
+
+      setUsersData(formatedData);
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des données :",

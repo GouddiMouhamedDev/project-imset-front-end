@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 
 
 export default function     MultiDataTable({ data,To}: any ) {
+    
     const columnHeaders = Object.keys(data && data.length > 0 ? data[0] : {});
-
+    
    
     return (
         <Table>
@@ -26,7 +27,7 @@ export default function     MultiDataTable({ data,To}: any ) {
                         <TableRow key={rowIndex}>
                             {columnHeaders.map((header, columnIndex) => (
                                 <TableCell key={columnIndex}>
-                                     <Link href={`/${To}/${row._id}`}>
+                                     <Link href={`/${To}/${row.Id}`}>
                                             {row[header] === null ? (
                                                 <Badge className="">Null</Badge>
                                             ) : typeof row[header] === 'boolean' ? (

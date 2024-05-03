@@ -9,9 +9,10 @@ import SearchBar from "@/components/searchBar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth, removeStorage } from "@/api/auth";
+import { VehicleData, VehicleFormatedData } from "@/types/vehicles";
 
 export default function Vehicles() {
-  const [vehiclesData, setVehiclesData] = useState<UsersData[]>([]);
+  const [vehiclesData, setVehiclesData] = useState<VehicleFormatedData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const fetchData = async () => {
@@ -22,7 +23,11 @@ export default function Vehicles() {
         router.push("/login");
       } else {
         const data = await getVehiclesData();
-        setVehiclesData(data);
+        const VehicleFormatedData: VehicleFormatedData[] = data.map((item: VehicleData) => ({
+          Id: item._id,
+          Matricule: item.matriculeVehicule
+        }));
+        setVehiclesData(VehicleFormatedData);
       }
     } catch (error) {
       console.error(
@@ -42,10 +47,10 @@ export default function Vehicles() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4">
+    <div className="min-h-screen p-4">
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-semibold">liste des véhicules</h1>
-        <Button className="bg-slate-700 hover:bg-slate-800 text-white">
+        <Button >
           <Link href={"/vehicles/add"}>Ajouter un Vehicule </Link>
         </Button>
       </div>

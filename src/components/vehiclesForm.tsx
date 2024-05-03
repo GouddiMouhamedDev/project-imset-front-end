@@ -3,8 +3,8 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { createVehicle, updateVehicleWithPut } from "@/api/vehicles";
-import { VehicleData } from "@/interface/vehicles";
+import { createVehicle, updateVehicle } from "@/api/vehicles";
+import { VehicleData } from "@/types/vehicles";
 import { useRouter } from 'next/navigation';
 
 export function VehiclesForm({ data }: { data?: VehicleData }) {
@@ -18,7 +18,7 @@ export function VehiclesForm({ data }: { data?: VehicleData }) {
     if (data) {
      
       try {
-       const response= await updateVehicleWithPut(data.id, formData);
+       const response= await updateVehicle(data._id, formData);
        if (response?.status===200){
           router.push("/vehicles");
         }
@@ -43,58 +43,20 @@ export function VehiclesForm({ data }: { data?: VehicleData }) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div>
-            <label htmlFor="vehicle_type">vehicle type</label>
+            <label htmlFor="matriculeVehicule">Matricule</label>
             <Input
-              {...register("vehicle_type")}
-              id="vehicle_type"
-              name="vehicle_type"
-              placeholder="vehicle type"
+              {...register("matriculeVehicule")}
+              
+              name="matriculeVehicule"
+              placeholder="9999 TU 200"
               type="text" 
-              defaultValue={data ? data.vehicle_type : ""}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="model">Model</label>
-            <Input
-              {...register("model")}
-              id="model"
-              name="model"
-              placeholder="Model"
-              type="text"
-              defaultValue={data ? data.model : ""}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="registration_number">Registration Number</label>
-            <Input
-              {...register("registration_number")}
-              id="registration_number"
-              name="registration_number"
-              placeholder="Registration Number"
-              type="text"
-              defaultValue={data ? data.registration_number : ""}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="phone">Assigned User</label>
-            <Input
-              {...register("assigned_user")}
-              id="assigned_user"
-              name="assigned_user"
-              placeholder="Assigned User"
-              type="number"
-              defaultValue={data ? data.assigned_user : ""}
+              defaultValue={data ? data.matriculeVehicule : ""}
               disabled={isSubmitting}
             />
           </div>
     
-          <Button type="submit"> {data ? "Edit" : "Add"}</Button>
+    
+          <Button type="submit"> {data ? "Modifier" : "Ajouter"}</Button>
 
         </div>
       </form>

@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                className="flex items-center p-2 space-x-2 rounded-md"
              >
                <FaListOl />
-               &nbsp;List
+               &nbsp;Liste
              </Link>
           
                <>
@@ -72,7 +72,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                    className="flex items-center p-2 space-x-3 rounded-md"
                  >
                    <IoMdAddCircleOutline />
-                   &nbsp;Add
+                   &nbsp;Ajouter
                  </Link>
                 {/*  <Link
                    href="/users/delete"

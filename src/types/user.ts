@@ -4,3 +4,10 @@ export interface User {
     email: string;
     role: string;
   }
+
+  export interface FormatedData{
+    Id: string;
+    Nom: string;
+    Email: string;
+    Rôle: string;
+  }

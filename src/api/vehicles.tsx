@@ -27,9 +27,15 @@ export const getVehiclesData = async () => {
 
 // fonction get un véhicule
 export const getOneVehiclesData = async (id: any) => {
-  const getUserUrl = `${BASE_URL}/vehicule/${id}`;
+  const getUserUrl = `${BASE_URL}/vehicules/${id}`;
   try {
-    const response = await axios.get(getUserUrl)
+    const response = await axios.get(getUserUrl,{
+      headers:{
+        'Content-Type': 'application/json',
+        'x-auth-token': `${token}`,
+
+      }
+   } );
     return response.data;
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération des données :", error);
@@ -59,7 +65,7 @@ export const vehiclesBulkDelete = async (vehiculesIds: []) => {
 }
 
 // Fonction pour mettre à jour un véhicule avec une requête PUT
-export const updateVehicleWithPut = async (id: any, updatedData: any) => {
+export const updateVehicle = async (id: any, updatedData: any) => {
   const putUrl = `${BASE_URL}${id}/update/`;
   try {
     const response = await axios.put(putUrl, updatedData);
