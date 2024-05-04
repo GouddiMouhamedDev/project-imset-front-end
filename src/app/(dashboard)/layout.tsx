@@ -29,7 +29,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <Header />
     <div className="flex">
           {/*sideBar */}
-          <div className=" w-1/6 hidden md:flex flex-col p-3 shadow  h-screen ">
+          <div className=" w-1/6 hidden md:flex flex-col p-3 shadow  h-screen sticky top-0 ">
      <div className="flex items-center">
        <h2 className="text-xl font-bold">Sidebar</h2>
      </div>
