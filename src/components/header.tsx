@@ -6,8 +6,9 @@ import { User } from "@/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {DropdownMenu,DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator,DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
-  import { GrLogout } from "react-icons/gr";
+  import { RiLogoutBoxFill } from "react-icons/ri";
 import { ModeToggle } from "./modeToggle";
+
 
 export default function Header() {
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -66,7 +67,7 @@ export default function Header() {
            href="/login"
            onClick={handleLogout}
            className="flex items-center space-x-2">
-           <GrLogout />
+           <RiLogoutBoxFill />
            <span>Déconnexion</span>
          </Link></DropdownMenuItem>
   </DropdownMenuContent>

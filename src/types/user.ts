@@ -5,7 +5,7 @@ export interface User {
     role: string;
   }
 
-  export interface FormatedData{
+  export interface UserFormatedData{
     Id: string;
     Nom: string;
     Email: string;

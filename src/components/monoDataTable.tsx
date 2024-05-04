@@ -68,36 +68,7 @@ export default function MonoDataTable({ data, link, handleDelete }: any) {
           {" "}
           <EditIcon />{" "}
         </Link>
-        {(userRole === "super-admin"||userRole === "admin") && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <div
-                style={{ cursor: "pointer" }}
-                onMouseEnter={(e: any) => (e.currentTarget.style.color = "red")}
-                onMouseLeave={(e: any) =>
-                  (e.currentTarget.style.color = "currentColor")
-                }
-              >
-                <RiDeleteBin6Line />
-              </div>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Êtes-vous absolument sûr ?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Cette action ne peut pas être annulée. Cela supprimera
-                  définitivement vos données .
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>
-                  Continuer
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
+       
       </div>
     </div>
   );
