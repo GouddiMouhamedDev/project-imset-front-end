@@ -16,9 +16,9 @@ export function VehiclesForm({ data }: { data?: VehicleData }) {
   const router= useRouter();
   const onSubmit: SubmitHandler<any> = async (formData) => {
     if (data) {
-     
       try {
        const response= await updateVehicle(data._id, formData);
+       console.log("response:",response);
        if (response?.status===200){
           router.push("/vehicles");
         }
@@ -28,8 +28,7 @@ export function VehiclesForm({ data }: { data?: VehicleData }) {
     } else {
       try {
         const response=  await createVehicle(formData);
-        console.log(response?.status) ;
-        if (response?.status===201){
+        if (response?.status===200){
           router.push("/vehicles");
         }
       } catch (error) {

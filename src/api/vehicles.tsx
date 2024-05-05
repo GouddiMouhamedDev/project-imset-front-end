@@ -44,13 +44,20 @@ export const getOneVehiclesData = async (id: any) => {
 };
 
 // Fonction pour supprimer un véhicule
-export const deleteVehicle = async (id: any) => {
-  const deleteUrl = `${BASE_URL}${id}/delete/`;
+export const deleteOneVehicleData = async (id: any) => {
+  const deleteUrl = `${BASE_URL}/vehicules/${id}`;
   try {
-    const response = await axios.delete(deleteUrl);
+    const response = await axios.delete(deleteUrl, {
+      headers: {
+        "x-auth-token": `${token}`,
+      },
+    });
     return response;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la suppression du véhicule :", error);
+    console.error(
+      "Une erreur s'est produite lors de la suppression du véhicule :",
+      error
+    );
   }
 };
 // Fonction pour supprimer list des véhicules
@@ -65,13 +72,22 @@ export const vehiclesBulkDelete = async (vehiculesIds: []) => {
 }
 
 // Fonction pour mettre à jour un véhicule avec une requête PUT
-export const updateVehicle = async (id: any, updatedData: any) => {
-  const putUrl = `${BASE_URL}${id}/update/`;
+export const updateOneVehicleData = async (id: any, updatedData: any) => {
+  const putUrl = `${BASE_URL}/vehicules/${id}`;
+  
   try {
-    const response = await axios.put(putUrl, updatedData);
+    const response = await axios.put(putUrl, updatedData, {
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": `${token}`,
+      },
+    });
     return response;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la mise à jour du véhicule :", error);
+    console.error(
+      "Une erreur s'est produite lors de la mise à jour du véhicule :",
+      error
+    );
   }
 };
 
@@ -88,10 +104,15 @@ export const updateVehicleWithPatch = async (id: any, updatedData: any) => {
 
 // Fonction pour créer un nouveau véhicule
 export const createVehicle = async (vehicleData: any) => {
-  const createUrl = `${BASE_URL}create/`;
+  const createUrl = `${BASE_URL}/vehicules`;
   try {
-    console.log(vehicleData)
-    const response = await axios.post(createUrl, vehicleData);
+    const response = await axios.post(createUrl, vehicleData,{
+      headers:{
+        'Content-Type': 'application/json',
+        'x-auth-token': `${token}`,
+
+      }
+   } );
 
     return response;
   } catch (error) {
