@@ -14,6 +14,7 @@ import {
 import { MdEdit } from "react-icons/md";
 import { getOneUserData, updateOneUserData } from "@/api/users";
 import { SubmitHandler } from "react-hook-form";
+import { setFips } from "crypto";
 
 export default function EditUserForm({
   userId,
@@ -30,10 +31,12 @@ export default function EditUserForm({
     try {
       const resp = await updateOneUserData(userId, formData);
       setMsg((resp as { data: { msg: string } }).data.msg);
+      onSubmitSuccess();
+      setFormData(formData)
       setTimeout(() => {
         setMsg(""); // Réinitialiser le message après 2 secondes
       }, 1500); // 2 secondes
-      onSubmitSuccess();
+      
     } catch (error) {
       console.error(
         "Erreur lors de la mise à jour des données de l'utilisateur :",
@@ -118,8 +121,5 @@ export default function EditUserForm({
       </DialogContent>
     </Dialog>
   );
-}
-function setOpenDialog(arg0: boolean) {
-  throw new Error("Function not implemented.");
 }
 
