@@ -19,7 +19,7 @@ export const getVehiclesData = async () => {
         'x-auth-token': `${token}`,
       },
     });;
-    return response.data; 
+    return response; 
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération des données :", error);
   }
@@ -72,7 +72,7 @@ export const vehiclesBulkDelete = async (vehiculesIds: []) => {
 }
 
 // Fonction pour mettre à jour un véhicule avec une requête PUT
-export const updateOneVehicleData = async (id: any, updatedData: any) => {
+export const updateOneVehiclesData = async (id: any, updatedData: any) => {
   const putUrl = `${BASE_URL}/vehicules/${id}`;
   
   try {

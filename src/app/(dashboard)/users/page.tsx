@@ -136,7 +136,8 @@ export default function Users() {
                     ))}
                   {/* Cellule pour le bouton */}
                   <TableCell className="flex place-content-center">
-                    <EditUserForm userId={row.id} onSubmitSuccess={handleEditFormSubmit}/>
+                    <EditUserForm userId={row.id} 
+                    onSubmitSuccess={handleEditFormSubmit}/>
                     {userRole === "super-admin" && (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>

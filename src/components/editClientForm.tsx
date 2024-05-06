@@ -47,6 +47,8 @@ export default function EditClientForm({
     formData
   ) => {
     try {
+      console.log(formData);
+      console.log(clientId)
       const response = await updateOneClientData(clientId, formData);
       setMsg((response as { data: { msg: string } }).data.msg);
       onSubmitSuccess();
@@ -64,13 +66,15 @@ export default function EditClientForm({
     }),
     telephone: z.string({
       required_error: "Téléphone requis.",
-    }),
+      
+    }).optional(),
     identifiantFiscaleClient: z.string({
       required_error: "Identifiant fiscal requis.",
     }),
     destination: z.string({
       required_error: "Destination requise.",
-    }),
+    })
+    
   });
 
   useEffect(() => {

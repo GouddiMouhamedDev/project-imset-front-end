@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   deleteOneVehicleData,
   getVehiclesData,
-  updateOneVehicleData,
+  updateOneVehiclesData,
 } from "@/api/vehicles";
 import Blueloading from "@/components/loading";
 import { Button } from "@/components/ui/button";
@@ -34,8 +34,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";  
-import { SubmitHandler, useForm } from "react-hook-form";
 import EditVehicleForm from "@/components/editVehicleForm";
 
 export default function Vehicles() {
@@ -45,38 +43,10 @@ export default function Vehicles() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const columnHeaders = Object.keys(vehiclesData && vehiclesData.length > 0 ? vehiclesData[0] : {});
-  const [msg,setMsg]=useState<any>();
-  const { register,
-     handleSubmit, 
-     formState: { isSubmitting },
-      reset } = useForm();
-  const [selectedVehicleId, setSelectedVehicleId] 
-  = useState<string | null>(null);
-
-  const onSubmit: SubmitHandler<any> = async (formData) => {
-    try {
-      const { Matricule } = formData;
-      const formattedData = {
-        matriculeVehicule: Matricule,
-      };
-      const response = await updateOneVehicleData(formData.Id, formattedData);
-      setMsg((response as { data: { msg: string } }).data.msg);
-      await fetchData();
-    } catch (error) {
-      console.error("Une erreur s'est produite lors de Update :", error);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      const response = await deleteOneVehicleData(id);
-      await fetchData();
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la suppression de l'utilisateur :",
-        error
-      );
-    }
+  
+  
+  const handleEditSuccess= () => {
+    fetchData();
   };
 
   const fetchData = async () => {
@@ -86,11 +56,12 @@ export default function Vehicles() {
         removeStorage();
         router.push("/login");
       } else {
-        const getdata: VehicleData[] = await getVehiclesData();
+        const response = await getVehiclesData();
+        const getdata: VehicleData[] = response!.data;
         const VehicleFormatedData: VehicleFormatedData[] = getdata.map(
           (item: VehicleData) => ({
             Id: item._id,
-            Matricule: item.matriculeVehicule,
+            Matricule: item.Matricule
           })
         );
         setVehiclesData(VehicleFormatedData);
@@ -105,31 +76,30 @@ export default function Vehicles() {
     }
   };
 
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await deleteOneVehicleData(id);
+      await fetchData();
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la suppression de l'utilisateur :",
+        error
+      );
+    }
+  };
+
+ 
+
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // Vérifie si un véhicule est sélectionné
-    if (selectedVehicleId) {
-      // Récupère les données du véhicule sélectionné
-      const selectedVehicle = vehiclesData.find((vehicle) => 
-        vehicle.Id === selectedVehicleId);
-      // Si les données du véhicule sélectionné sont disponibles, réinitialise le formulaire avec ces données
-      if (selectedVehicle) {
-        setMsg("");
-        reset(selectedVehicle);
-      }
-    }
-  }, [selectedVehicleId]);
+  
 
   if (isLoading) {
     return <Blueloading />;
   }
-
-  const handleEditSuccess= () => {
-    fetchData();
-  };
 
   return (
     <div className="min-h-screen p-4">
@@ -167,7 +137,7 @@ export default function Vehicles() {
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                     <EditVehicleForm
-            vehicleId={selectedVehicleId}
+            vehicleId={row.Id}
             onSubmitSuccess={handleEditSuccess}
           />
                       {userRole === "super-admin" && (

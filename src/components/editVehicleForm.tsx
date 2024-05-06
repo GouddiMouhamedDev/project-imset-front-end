@@ -1,10 +1,22 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { updateOneVehicleData } from "@/api/vehicles";
+import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
+import * as z from "zod";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { MdEdit } from "react-icons/md";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+import { SubmitHandler } from "react-hook-form";
+import { getOneVehiclesData ,updateOneVehiclesData} from "@/api/vehicles";
+
+
 
 export default function EditVehicleForm({
   vehicleId,
@@ -13,26 +25,56 @@ export default function EditVehicleForm({
   vehicleId: string | null;
   onSubmitSuccess: () => void;
 }) {
-  const { register, handleSubmit, formState: { isSubmitting }, reset } = useForm();
-  const [msg, setMsg] = useState<string | undefined>();
-
-  const onSubmit: SubmitHandler<any> = async (formData) => {
+  const [formData, setFormData] = useState<any>({});
+  const [msg,setMsg]=useState<string>();
+  const handleSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
+    formData
+  ) => {
     try {
-      const response = await updateOneVehicleData(vehicleId, formData);
-      setMsg((response as { data: { msg: string } }).data.msg);
+      const resp = await updateOneVehiclesData(vehicleId, formData);
+      setMsg((resp as { data: { msg: string } }).data.msg);
       onSubmitSuccess();
+      setFormData(formData);
       setTimeout(() => {
-        setMsg("");
-      }, 1500); // 1.5 seco // 2 secondes
+        setMsg(""); // Réinitialiser le message après 2 secondes
+      }, 1500); // 2 secondes
     } catch (error) {
-      console.error("Une erreur s'est produite lors de la mise à jour :", error);
+      console.error(
+        "Erreur lors de la mise à jour des données de l'utilisateur :",
+        error
+      );
     }
   };
 
+
+  const fetchOneVehicleData = async () => {
+    if (vehicleId) {
+      try {
+        const fetchedOneUserData = await getOneVehiclesData(vehicleId);
+        console.log(fetchedOneUserData)
+        setFormData(fetchedOneUserData)
+
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des données de l'utilisateur :",
+          error
+        );
+      }
+    }
+  };
+
+  const formSchema = z.object({
+    Matricule: z.string({
+      required_error: "Matricule requis.",
+    }),
+  });
+
+
+  
   useEffect(() => {
-    // Reset form when vehicleId changes
-    reset();
-  }, [vehicleId, reset]);
+    fetchOneVehicleData();
+   
+  }, [vehicleId]);
 
   return (
     <Dialog>
@@ -41,29 +83,28 @@ export default function EditVehicleForm({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Modifier le véhicule</DialogTitle>
+          <DialogTitle>Modifier le profil</DialogTitle>
           <DialogDescription>
-            Apportez des modifications au véhicule ici. Cliquez sur Enregistrer lorsque vous avez terminé.
+            Apportez des modifications au profil ici. Cliquez sur Enregistrer
+            lorsque vous avez terminé
+           
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label className="text-right" htmlFor="matricule">Matricule</label>
-              <Input
-                {...register("matricule")}
-                id="matricule"
-                className="col-span-3"
-                disabled={isSubmitting}
-              />
-            </div>
-            {msg && <div className="text-xs pt-3">{msg}</div>}
+        <AutoForm
+          formSchema={formSchema}
+          onSubmit={handleSubmit}
+          values={formData}
+        >
+           
+          <div className="flex justify-between">
+          <div>{msg}</div>
+            <AutoFormSubmit>Enregistrer</AutoFormSubmit>
           </div>
-          <DialogFooter>
-            <Button type="submit" disabled={isSubmitting}>Enregistrer les modifications</Button>
-          </DialogFooter>
-        </form>
+        </AutoForm>
       </DialogContent>
     </Dialog>
   );
 }
+
+
+
