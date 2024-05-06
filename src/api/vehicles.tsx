@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getAccessTokenFromStorage} from './auth';
 
 
@@ -84,10 +84,14 @@ export const updateOneVehicleData = async (id: any, updatedData: any) => {
     });
     return response;
   } catch (error) {
-    console.error(
-      "Une erreur s'est produite lors de la mise à jour du véhicule :",
-      error
-    );
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      console.error("Erreur de la requête :", axiosError.response?.data);
+      return axiosError.response;
+    } else {
+      console.error("Une erreur s'est produite lors de la mise à jour des données de l'utilisateur :", error);
+      return error;
+    }
   }
 };
 

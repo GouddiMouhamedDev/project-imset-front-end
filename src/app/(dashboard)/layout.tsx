@@ -74,13 +74,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                    <IoMdAddCircleOutline />
                    &nbsp;Ajouter
                  </Link>
-                {/*  <Link
-                   href="/users/delete"
-                   className="flex items-center p-2 space-x-2 rounded-md"
-                 >
-                   <RiDeleteBin6Line />
-                   &nbsp;Del
-                 </Link>*/}
                </>
                </>
               )} 
@@ -92,7 +85,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
            <AccordionTrigger>
              <div className="flex items-center space-x-2">
                <MdCommute />
-               <span>Vehicules(dev)</span>
+               <span>Vehicules(test here)</span>
              </div>
            </AccordionTrigger>
            <AccordionContent>
@@ -102,27 +95,25 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
              >
                <FaListOl /> &nbsp;List
              </Link>
-             {isAdmin && ( // Vérifiez si l'utilisateur a le rôle 'super-admin'
-               <>
-                 <Link
-                   href="/vehicles/add"
-                   className="flex items-center p-2 space-x-3 rounded-md"
-                 >
-                   <IoMdAddCircleOutline />
-                   &nbsp;Add
-                 </Link>
-                {/*  <Link
-                   href="/vehicles/delete"
-                   className="flex items-center p-2 space-x-2 rounded-md"
-                 >
-                   <RiDeleteBin6Line />
-                   &nbsp;Del
-                 </Link>*/}
-               </>
-             )}
            </AccordionContent>
          </AccordionItem>
          <AccordionItem value="item-3">
+           <AccordionTrigger>
+             <div className="flex items-center space-x-2">
+               <MdCommute />
+               <span>Clients(dev)</span>
+             </div>
+           </AccordionTrigger>
+           <AccordionContent>
+             <Link
+               href="/clients"
+               className="flex items-center p-2 space-x-3 rounded-md"
+             >
+               <FaListOl /> &nbsp;List
+             </Link>
+           </AccordionContent>
+         </AccordionItem>
+         <AccordionItem value="item-4">
            <AccordionTrigger>
            <div className="flex items-center space-x-2">
            <LuSettings />

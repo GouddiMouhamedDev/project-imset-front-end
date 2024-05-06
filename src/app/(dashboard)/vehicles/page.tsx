@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { VehicleData, VehicleFormatedData } from "@/types/vehicles";
 import { IoIosAddCircle } from "react-icons/io";
-import { IoEllipsisHorizontal } from "react-icons/io5";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import {
@@ -35,18 +34,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
 import { Input } from "@/components/ui/input";  
 import { SubmitHandler, useForm } from "react-hook-form";
+import EditVehicleForm from "@/components/editVehicleForm";
 
 export default function Vehicles() {
   const [vehiclesData, setVehiclesData] = useState<VehicleFormatedData[]>([]);
@@ -137,6 +127,10 @@ export default function Vehicles() {
     return <Blueloading />;
   }
 
+  const handleEditSuccess= () => {
+    fetchData();
+  };
+
   return (
     <div className="min-h-screen p-4">
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
@@ -172,51 +166,10 @@ export default function Vehicles() {
                     ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <MdEdit
-                            className="w-4 h-4 cursor-pointer hover:scale-[1.1]"
-                            onClick={() => setSelectedVehicleId(row["Id"])}
-                          />
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <form onSubmit={handleSubmit(onSubmit)}>
-                            <DialogHeader>
-                              <DialogTitle>Modifier le véhicules</DialogTitle>
-                              <DialogDescription>
-                                Apportez des modifications au véhicule ici.
-                                Cliquez sur Enregistrer lorsque vous avez
-                                terminé.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <input
-                              type="hidden"
-                              {...register("Id")}
-                              value={row["Id"]}
-                            />
-                            <div className="grid gap-4 py-4">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label className="text-right">Matricule</Label>
-                                <Input
-                                  {...register("Matricule")}
-                                  id="Matricule"
-                                  defaultValue={row["Matricule"]}
-                                  className="col-span-3"
-                                />
-                              </div>
-                            </div>
-                            <DialogFooter>
-                            <div className="text-xs pt-3">{msg}</div>
-                              <Button 
-                              type="submit" 
-                              disabled={isSubmitting}
-                              >
-                                Enregistrer les modifications
-                              </Button>
-                            </DialogFooter>
-                          </form>
-                        </DialogContent>
-                      </Dialog>
+                    <EditVehicleForm
+            vehicleId={selectedVehicleId}
+            onSubmitSuccess={handleEditSuccess}
+          />
                       {userRole === "super-admin" && (
                        
                           <AlertDialog>
