@@ -9,7 +9,7 @@ import SearchBar from "@/components/searchBar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
-import { ClientData } from "@/types/clients";
+import { ClientData, ClientFormatData } from "@/types/clients";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -17,7 +17,7 @@ import { IoIosAddCircle } from "react-icons/io";
 import EditClientForm from "@/components/editClientForm";
 
 export default function Clients() {
-  const [clientsData, setClientsData] = useState<ClientData[]>([]);
+  const [clientsData, setClientsData] = useState<ClientFormatData[]>([]);
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +34,15 @@ export default function Clients() {
         router.push("/login");
       } else {
         const data: ClientData[] = await getClientsData();
-        setClientsData(data);
+        const formatedData: ClientFormatData[] = data.map((client) => ({
+          Id: client._id,
+          Nom: client.nom,
+          Telephone: client.telephone,
+          IdentifiantFiscaleClient: client.identifiantFiscaleClient,
+          Destination: client.destination,
+          Solde: client.solde,
+        }));
+        setClientsData(formatedData);
       }
     } catch (error) {
       console.error(
@@ -78,7 +86,9 @@ export default function Clients() {
         <Table>
           <TableHeader>
             <TableRow>
-              {columnHeaders.map((header) => (
+              {columnHeaders
+              .filter((header) => header !== "Id") 
+              .map((header) => (
                 <TableHead key={header}>{header}</TableHead>
               ))}
               <TableHead className="flex justify-center pt-3">
@@ -92,7 +102,9 @@ export default function Clients() {
             {clientsData && clientsData.length > 0 ? (
               clientsData.map((row: any, rowIndex: number) => (
                 <TableRow key={rowIndex}>
-                  {columnHeaders.map((header, columnIndex) => (
+                  {columnHeaders
+                  .filter((header)=>header!="Id")
+                  .map((header, columnIndex) => (
                     <TableCell key={columnIndex}>
                       <span>{row[header]}</span>
                     </TableCell>

@@ -7,3 +7,14 @@ export interface ClientData {
     solde: number;
   }
   
+
+export interface ClientFormatData {
+
+  Id: string;
+  Nom: string;
+  Telephone: string;
+  IdentifiantFiscaleClient: string;
+  Destination: string;
+  Solde: number;
+
+}
