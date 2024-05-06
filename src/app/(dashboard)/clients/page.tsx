@@ -23,9 +23,8 @@ export default function Clients() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const columnHeaders = Object.keys(clientsData && clientsData.length > 0 ? clientsData[0] : {});
-  const [msg, setMsg] = useState<any>();
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
-
+  
+;
   const fetchData = async () => {
     try {
       const isAuthenticated = auth(["admin", "super-admin", "user"]);
@@ -58,7 +57,7 @@ export default function Clients() {
   };
   const handleDelete = async (id: string) => {
     try {
-      const response = await deleteOneClientData(id);
+      await deleteOneClientData(id);
       await fetchData();
     } catch (error) {
       console.error(
@@ -69,7 +68,19 @@ export default function Clients() {
   };
 
   useEffect(() => {
-    fetchData();
+    (async () => {
+      const fetchDataAfterAuth = async () => {
+        const isAuthenticated = auth(["admin", "super-admin","user"]);
+        if (isAuthenticated) {
+          fetchData();
+        } else {
+          removeStorage();
+          router.push("/login");
+        }
+      };
+
+      await fetchDataAfterAuth();
+    })();
   }, []);
 
   if (isLoading) {
@@ -132,7 +143,7 @@ export default function Clients() {
                             <AlertDialogFooter>
                               <AlertDialogCancel>Annuler</AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={() => handleDelete(row["Id"])}
+                                onClick={() => handleDelete(row.Id)}
                               >
                                 Continuer
                               </AlertDialogAction>

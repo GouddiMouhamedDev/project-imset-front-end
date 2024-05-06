@@ -21,7 +21,7 @@ export const getClientsData = async () => {
 };
 
 // Fonction pour récupérer les données d'un client spécifique
-export const getOneClientData = async (id: any) => {
+export const getOneClientData = async (id:string) => {
   const getClientUrl = `${BASE_URL}/clients/${id}`;
   try {
     const response = await axios.get(getClientUrl, {
@@ -30,7 +30,7 @@ export const getOneClientData = async (id: any) => {
         'x-auth-token': `${token}`,
       },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération des données du client :", error);
   }
