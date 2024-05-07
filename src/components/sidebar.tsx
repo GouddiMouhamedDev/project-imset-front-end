@@ -9,7 +9,7 @@ import { LuSettings } from "react-icons/lu";
 import { MdCommute, MdLockReset } from "react-icons/md";
 import { GiSteeringWheel } from "react-icons/gi";
 import { getUserInfoFromStorage } from "@/api/auth";
-
+import { TbTruckLoading } from "react-icons/tb";
 
 export default function Sidebar(){
 
@@ -103,11 +103,25 @@ export default function Sidebar(){
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <GiSteeringWheel />
-                <span>chauffeurs(test here)</span>
+                <span>Chauffeurs(test here)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <Link href="/chauffeurs" className="flex items-center p-2 space-x-3 rounded-md">
+                <FaListOl /> &nbsp;List
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-7">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+              <TbTruckLoading />
+                <span>Fournisseurs(test here)</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link href="/fournisseurs " className="flex items-center p-2 space-x-3 rounded-md">
                 <FaListOl /> &nbsp;List
               </Link>
             </AccordionContent>

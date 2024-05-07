@@ -1,29 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  deleteOneClientData,
-  getClientsData,
-} from "@/api/clients";
+  deleteOneFournisseurData,
+  getFournisseursData,
+} from "@/api/fournisseurs";
 import Blueloading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
-import { ClientData, ClientFormatData } from "@/types/clients";
-import { MdDeleteForever} from "react-icons/md";
+import { FournisseurData, FournisseurFormatData } from "@/types/fournisseurs";
+import { MdDeleteForever } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import EditClientForm from "@/components/editClientForm";
-import AddClientForm from "@/components/addClientForm";
+import EditFournisseurForm from "@/components/editFournisseurForm";
+import AddFournisseurForm from "@/components/addFournisseurForm";
 
-export default function Clients() {
-  const [clientsData, setClientsData] = useState<ClientFormatData[]>([]);
+export default function Fournisseurs() {
+  const [fournisseursData, setFournisseursData] = useState<FournisseurFormatData[]>([]);
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const columnHeaders = Object.keys(clientsData && clientsData.length > 0 ? clientsData[0] : {});
-  
-;
+  const columnHeaders = Object.keys(fournisseursData && fournisseursData.length > 0 ? fournisseursData[0] : {});
+
   const fetchData = async () => {
     try {
       const isAuthenticated = auth(["admin", "super-admin", "user"]);
@@ -31,48 +31,49 @@ export default function Clients() {
         removeStorage();
         router.push("/login");
       } else {
-        const data: ClientData[] = await getClientsData();
-        const formatedData: ClientFormatData[] = data.map((client) => ({
-          Id: client._id,
-          Nom: client.nom,
-          Telephone: client.telephone,
-          IdentifiantFiscale: client.identifiantFiscaleClient,
-          Destination: client.destination,
-          Solde: client.solde,
+        const data: FournisseurData[] = await getFournisseursData();
+        const formattedData: FournisseurFormatData[] = data.map((fournisseur) => ({
+          Id: fournisseur._id,
+          Nom: fournisseur.nom,
+          Telephone: fournisseur.telephone,
+          IdentifiantFiscale: fournisseur.identifiantFiscaleFournisseur,
         }));
-        setClientsData(formatedData);
+        setFournisseursData(formattedData);
       }
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la récupération des données des clients :",
+        "Une erreur s'est produite lors de la récupération des données des fournisseurs :",
         error
       );
     } finally {
       setIsLoading(false);
     }
   };
+
   const handleEditFormSubmit = () => {
     fetchData();
   };
+
   const handleDelete = async (id: string) => {
     try {
-      await deleteOneClientData(id);
+      await deleteOneFournisseurData(id);
       await fetchData();
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la suppression du client :",
+        "Une erreur s'est produite lors de la suppression du fournisseur :",
         error
       );
     }
   };
-  const handleEditSuccess= () => {
+
+  const handleEditSuccess = () => {
     fetchData();
   };
 
   useEffect(() => {
     (async () => {
       const fetchDataAfterAuth = async () => {
-        const isAuthenticated = auth(["admin", "super-admin","user"]);
+        const isAuthenticated = auth(["admin", "super-admin", "user"]);
         if (isAuthenticated) {
           fetchData();
         } else {
@@ -92,7 +93,7 @@ export default function Clients() {
   return (
     <div className="min-h-screen p-4">
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Liste des clients</h1>
+        <h1 className="text-2xl font-semibold">Liste des fournisseurs</h1>
       </div>
       <SearchBar />
       <div className="rounded-md border mt-2">
@@ -100,42 +101,37 @@ export default function Clients() {
           <TableHeader>
             <TableRow>
               {columnHeaders
-              .filter((header) => header !== "Id") 
-              .map((header) => (
-                <TableHead key={header}> 
-                {header === "IdentifiantFiscale" ? "Identifiant Fiscale" : header}
-                </TableHead>
-              ))}
+                .filter((header) => header !== "Id")
+                .map((header) => (
+                  <TableHead key={header}>
+                    {header === "IdentifiantFiscale" ? "Identifiant Fiscale" : header}
+                  </TableHead>
+                ))}
               <TableHead className="flex justify-center pt-3">
-             <AddClientForm
-             onSubmitSuccess={handleEditSuccess}
-             />
+                <AddFournisseurForm onSubmitSuccess={handleEditSuccess} />
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {clientsData && clientsData.length > 0 ? (
-              clientsData.map((row: any, rowIndex: number) => (
+            {fournisseursData && fournisseursData.length > 0 ? (
+              fournisseursData.map((row: any, rowIndex: number) => (
                 <TableRow key={rowIndex}>
                   {columnHeaders
-                  .filter((header)=>header!="Id")
-                  .map((header, columnIndex) => (
-                    <TableCell key={columnIndex}>
-                      <span>{row[header]}</span>
-                    </TableCell>
-                  ))}
+                    .filter((header) => header !== "Id")
+                    .map((header, columnIndex) => (
+                      <TableCell key={columnIndex}>
+                        <span>{row[header]}</span>
+                      </TableCell>
+                    ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
-                     <EditClientForm 
-                     clientId={row.Id} 
-                     onSubmitSuccess={handleEditFormSubmit}/>
+                      <EditFournisseurForm fournisseurId={row.Id} onSubmitSuccess={handleEditFormSubmit} />
                       {isAdmin && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
-                            <MdDeleteForever  />
+                              <MdDeleteForever />
                             </div>
-                          
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
@@ -149,9 +145,7 @@ export default function Clients() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Annuler</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(row.Id)}
-                              >
+                              <AlertDialogAction onClick={() => handleDelete(row.Id)}>
                                 Continuer
                               </AlertDialogAction>
                             </AlertDialogFooter>
