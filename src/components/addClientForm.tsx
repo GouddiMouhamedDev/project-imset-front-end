@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from "react";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import * as z from "zod";
@@ -56,7 +57,8 @@ export default function AddClientForm({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <IoIosAddCircle className="w-4 h-4 cursor-pointer hover:scale-[1.1]" />
+        <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">  <IoIosAddCircle  /></div>
+      
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

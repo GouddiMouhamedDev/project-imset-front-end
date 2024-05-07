@@ -51,7 +51,6 @@ export default function EditVehicleForm({
     if (vehicleId) {
       try {
         const fetchedOneUserData = await getOneVehiclesData(vehicleId);
-        console.log(fetchedOneUserData)
         setFormData(fetchedOneUserData)
 
       } catch (error) {
@@ -79,7 +78,8 @@ export default function EditVehicleForm({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <MdEdit className="w-4 h-4 cursor-pointer hover:scale-[1.1]" />
+        <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]"> <MdEdit  /></div>
+       
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

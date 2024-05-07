@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { deleteOneUserData, getOneUserData } from "@/api/users";
 import Blueloading from "@/components/loading";
 import MonoDataTable from "@/components/monoDataTable";
@@ -77,7 +77,10 @@ export default function OneUser({ params: { id }}: {params: { id: string }}) {
       <div className=" flex-col p-2">
        
       <Avatar className="border-4 w-40 h-40 hover:opacity-75 ">
-          <AvatarImage src="/img/Avatar-removebg-preview.png" />
+          <AvatarImage 
+          src="/img/Avatar-removebg-preview.png" 
+         
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
        

@@ -13,7 +13,14 @@ export interface User {
   }
 
 
-  
+  export interface OneUserData{
+    _id: string;
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+    idUser: number;
+  }
 
 
 
@@ -34,14 +41,7 @@ export interface UsersData {
   
   }
 
-  export interface OneUserData{
-    _id: string;
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    idUser: number;
-  }
+
 
   export interface ResetFormData {
     email : string;

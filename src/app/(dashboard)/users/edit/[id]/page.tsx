@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import { UserForm} from "@/components/userForm"
 import { useEffect, useState } from "react"
-import { OneUserData } from "@/interface/users"
+import { OneUserData } from "@/types/user"
 import { getOneUserData } from "@/api/users"
 import Blueloading from "@/components/loading"
 import { useRouter } from "next/navigation"

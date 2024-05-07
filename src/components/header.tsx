@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
 import { useState, useEffect } from "react";
@@ -47,7 +48,10 @@ export default function Header() {
         <DropdownMenu >
   <DropdownMenuTrigger asChild>
     <Avatar className="border-2 hover:opacity-75">
-          <AvatarImage src="/img/Avatar-removebg-preview.png" />
+          <AvatarImage 
+          src="/img/Avatar-removebg-preview.png" 
+         
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar></DropdownMenuTrigger>
   <DropdownMenuContent>

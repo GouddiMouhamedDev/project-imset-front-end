@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   deleteOneClientData,
@@ -10,10 +10,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { ClientData, ClientFormatData } from "@/types/clients";
-import { MdDeleteForever, MdEdit } from "react-icons/md";
+import { MdDeleteForever} from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { IoIosAddCircle } from "react-icons/io";
 import EditClientForm from "@/components/editClientForm";
 import AddClientForm from "@/components/addClientForm";
 
@@ -134,7 +133,10 @@ export default function Clients() {
                       {isAdmin && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <MdDeleteForever className="w-4 h-4 cursor-pointer hover:scale-[1.1]" />
+                            <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
+                            <MdDeleteForever  />
+                            </div>
+                          
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>

@@ -1,17 +1,13 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
-import {
-  deleteOneVehicleData,
-  getVehiclesData,
-  updateOneVehiclesData,
-} from "@/api/vehicles";
 import Blueloading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
-import { VehicleData, VehicleFormatedData } from "@/types/vehicles";
-import { MdDeleteForever} from "react-icons/md";
-
+import {
+  getChauffeursData,
+  deleteOneChauffeurData,
+} from "@/api/chauffeurs";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,20 +27,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import EditVehicleForm from "@/components/editVehicleForm";
-import AddVehicleForm from "@/components/addVehicleForm";
+import EditChauffeurForm from "@/components/editChauffeurForm";
+import AddChauffeurForm from "@/components/addChauffeurForm";
+import { MdDeleteForever } from "react-icons/md";
+import {ChauffeurData, ChauffeurFormatedData } from "@/types/Chauffeur";
 
-export default function Vehicles() {
-  const [vehiclesData, setVehiclesData] = useState<VehicleFormatedData[]>([]);
+export default function Chauffeurs() {
+  const [chauffeursData, setChauffeursData] = useState<ChauffeurFormatedData[]>([]);
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const columnHeaders = Object.keys(
-  vehiclesData && vehiclesData.length > 0 ? vehiclesData[0] : {});
-  
-  
-  const handleEditSuccess= () => {
+    chauffeursData && chauffeursData.length > 0 ? chauffeursData[0] : {});
+
+  const handleEditSuccess = () => {
     fetchData();
   };
 
@@ -55,15 +52,15 @@ export default function Vehicles() {
         removeStorage();
         router.push("/login");
       } else {
-        const response = await getVehiclesData();
-        const getdata: VehicleData[] = response!.data;
-        const VehicleFormatedData: VehicleFormatedData[] = getdata.map(
-          (item: VehicleData) => ({
-            Id: item._id,
-            Matricule: item.Matricule
-          })
-        );
-        setVehiclesData(VehicleFormatedData);
+        const response = await getChauffeursData();
+        const getdata:ChauffeurData[] = response!.data;
+        const chauffeurFormatedData: ChauffeurFormatedData[] = getdata.map(
+            (item: ChauffeurData) => ({
+              Id: item._id,
+              Nom: item.name
+            })
+          );
+        setChauffeursData(chauffeurFormatedData);
       }
     } catch (error) {
       console.error(
@@ -71,30 +68,25 @@ export default function Vehicles() {
         error
       );
     } finally {
-      setIsLoading(false);
+      setIsLoading(false);  
     }
   };
 
-
   const handleDelete = async (id: string) => {
     try {
-      const response = await deleteOneVehicleData(id);
+      await deleteOneChauffeurData(id);
       await fetchData();
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la suppression de l'utilisateur :",
+        "Une erreur s'est produite lors de la suppression du chauffeur :",
         error
       );
     }
   };
 
- 
-
   useEffect(() => {
     fetchData();
   }, []);
-
-  
 
   if (isLoading) {
     return <Blueloading />;
@@ -103,7 +95,7 @@ export default function Vehicles() {
   return (
     <div className="min-h-screen p-4">
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Liste des véhicules</h1>
+        <h1 className="text-2xl font-semibold">Liste des chauffeurs</h1>
       </div>
       <SearchBar />
       <div className="rounded-md border mt-2">
@@ -116,16 +108,13 @@ export default function Vehicles() {
                   <TableHead key={header}>{header}</TableHead>
                 ))}
               <TableHead className="flex justify-center pt-3 border-spacing-1">
-                <AddVehicleForm
-                 onSubmitSuccess={handleEditSuccess}/>
-               
-                  
+                <AddChauffeurForm onSubmitSuccess={handleEditSuccess} />
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {vehiclesData && vehiclesData.length > 0 ? (
-              vehiclesData.map((row: any, rowIndex: number) => (
+            {chauffeursData && chauffeursData.length > 0 ? (
+              chauffeursData.map((row:any, rowIndex: number) => (
                 <TableRow key={rowIndex}>
                   {columnHeaders
                     .filter((header) => header !== "id")
@@ -136,41 +125,38 @@ export default function Vehicles() {
                     ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
-                    <EditVehicleForm
-            vehicleId={row.Id}
-            onSubmitSuccess={handleEditSuccess}
-          />
+                      <EditChauffeurForm
+                        chauffeurId={row.Id}
+                        onSubmitSuccess={handleEditSuccess}
+                      />
                       {isAdmin && (
-                       
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <div  className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
-                              <MdDeleteForever/>
-                              </div>
-                             
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Êtes-vous absolument sûr ?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Cette action ne peut pas être annulée.
-                                  Cela supprimera définitivement vos
-                                  données.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDelete(row["Id"])}
-                                >
-                                  Continuer
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]" >  <MdDeleteForever /></div>
+                          
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Êtes-vous absolument sûr ?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Cette action ne peut pas être annulée. Cela
+                                supprimera définitivement vos données.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>
+                                Annuler
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(row["Id"])}
+                              >
+                                Continuer
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       )}
                     </div>
                   </TableCell>

@@ -142,7 +142,10 @@ export default function Users() {
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <div className="flex items-center cursor-pointer space-x-4">
-                            <MdDeleteForever className="w-4 h-4" />
+                            <div className="w-4 h-4">
+                            <MdDeleteForever  />
+                            </div>
+                          
                           </div>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

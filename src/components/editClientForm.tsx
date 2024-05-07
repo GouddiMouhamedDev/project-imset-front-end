@@ -85,7 +85,10 @@ export default function EditClientForm({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <MdEdit className="w-4 h-4 cursor-pointer hover:scale-[1.1]" />
+        <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]" >
+        <MdEdit />
+        </div>
+       
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
