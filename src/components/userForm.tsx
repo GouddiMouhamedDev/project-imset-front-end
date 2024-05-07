@@ -123,7 +123,7 @@ export function UserForm({
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button type="submit"> {data ? "Éditer" : "S'inscrire"}</Button>
+              <Button type="submit"> {data ? "Éditer" : "Créer"}</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>

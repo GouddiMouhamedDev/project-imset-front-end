@@ -6,33 +6,12 @@ const BASE_URL="http://localhost:3000/api"
 const token=getAccessTokenFromStorage();
 
 
-export const pswReset = async ( email: string ,oldPassword: string, newPassword: string, newPasswordConfirm: string) => {
-  const pswResetUrl = `https://fleet-yuxn.onrender.com/api/RequestPasswordReset/`;
-
-  if (newPassword !== newPasswordConfirm) {
-    console.error('Les nouveaux mots de passe ne correspondent pas.');
-    return; 
-  }
-
-  try {
-    const response = await axios.post(pswResetUrl, {
-      email,
-      oldPassword,
-      newPassword,
-      newPasswordConfirm,
-    });
-    console.log('Réinitialisation du mot de passe réussie !');
-    return response.data;
-  } catch (error) {
-    console.error("Une erreur s'est produite lors de la réinitialisation du mot de passe :", error);
-  }
-};
 
 
 
 
 export const activateEmail = async (token:string) => {
-  const getActiveEmail = `http://fleet-yuxn.onrender.com/api/activate-email/${token}`;
+  const getActiveEmail = `${BASE_URL}/api/activate-email/${token}`;
 
   try {
     const response = await axios.get(getActiveEmail, {
@@ -89,42 +68,11 @@ export const getOneUserData = async (id:any) => {
 
 
 
-export const usersBulkDelete = async (userIds:[]) => {
-  const bulkDeleteUrl = `https://fleet-yuxn.onrender.com/api/auth/users/bulk-delete/`;
-
-  try {
-    const response = await axios.put(bulkDeleteUrl, {
-      data: { userIds },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    console.log('Suppression en vrac des utilisateurs réussie !');
-    return response;
-  } catch (error) {
-    console.error("Une erreur s'est produite lors de la suppression en vrac des utilisateurs :", error);
-  }
-};
 
 
 
 
 
- export const getUserMe = async () => {
-  const getUserMeUrl = `https://fleet-yuxn.onrender.com/api/auth/users/me`;
-  try {
-    const response = await axios.get(getUserMeUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-       //token
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Une erreur s'est produite lors de la récupération des données de l'utilisateur actuel :", error);
-  }
-};
 
 
 
@@ -191,3 +139,55 @@ export const updateOneUserData = async (id: any, updatedUserData: any) => {
     }
   }
 };
+
+
+
+/*
+***************************************************************************************
+export const pswReset = async ( email: string ,oldPassword: string,
+   newPassword: string, newPasswordConfirm: string) => {
+  const pswResetUrl = `${BASE_URL}/api/RequestPasswordReset/`;
+
+  if (newPassword !== newPasswordConfirm) {
+    console.error('Les nouveaux mots de passe ne correspondent pas.');
+    return; 
+  }
+
+  try {
+    const response = await axios.post(pswResetUrl, {
+      email,
+      oldPassword,
+      newPassword,
+      newPasswordConfirm,
+    });
+    console.log('Réinitialisation du mot de passe réussie !');
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la réinitialisation du mot de passe :", error);
+  }
+};
+
+
+***************************************************************************************
+export const usersBulkDelete = async (userIds:[]) => {
+  const bulkDeleteUrl = `${BASE_URL}/api/auth/users/bulk-delete/`;
+
+  try {
+    const response = await axios.put(bulkDeleteUrl, {
+      data: { userIds },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Suppression en vrac des utilisateurs réussie !');
+    return response;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la suppression en vrac des utilisateurs :", error);
+  }
+};
+
+
+
+
+*/

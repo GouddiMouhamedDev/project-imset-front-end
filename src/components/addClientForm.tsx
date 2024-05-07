@@ -1,5 +1,4 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import * as z from "zod";
 
@@ -11,53 +10,31 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MdEdit } from "react-icons/md";
-import { getOneClientData, updateOneClientData } from "@/api/clients";
 import { SubmitHandler } from "react-hook-form";
-import { ClientData } from "@/types/clients";
+import { createClient } from "@/api/clients"; // Assurez-vous d'importer la fonction appropriée pour créer un client
+import { IoIosAddCircle } from "react-icons/io";
 
-
-
-export default function EditClientForm({
-  clientId,
+export default function AddClientForm({
   onSubmitSuccess,
 }: {
-  clientId: string | null;
   onSubmitSuccess: () => void;
 }) {
-  const [formData, setFormData] = useState<any>();
-  const [msg, setMsg] = useState<string>();
+  const [formData, setFormData] = useState<any>({});
+  const [msg, setMsg] = useState<string>("");
 
   const handleSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
     formData
   ) => {
     try {
-      const response = await updateOneClientData(clientId, formData);
+      const response = await createClient(formData); // Utilisez la fonction pour créer un client
       setMsg((response as { data: { msg: string } }).data.msg);
       onSubmitSuccess();
-      setFormData(formData);
+      setFormData({});
       setTimeout(() => {
-        setMsg(""); // Réinitialiser le message après 1.5 secondes
+        setMsg(""); // Effacer le message après 1.5 secondes
       }, 1500);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour :", error);
-    }
-  };
-
-  const fetchOneClientData = async () => {
-    if (clientId) {
-      try {
-     
-        const fetchedOneClientData = await getOneClientData(clientId);
-     
-          setFormData(fetchedOneClientData!.data);
-        
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des données de l'utilisateur :",
-          error
-        );
-      }
+      console.error("Erreur lors de la création du client :", error);
     }
   };
 
@@ -67,31 +44,25 @@ export default function EditClientForm({
     }),
     telephone: z.string({
       required_error: "Téléphone requis.",
-      
     }).optional(),
     identifiantFiscaleClient: z.string({
       required_error: "Identifiant fiscal requis.",
     }).describe("Identifiant Fiscale"),
     destination: z.string({
       required_error: "Destination requise.",
-    })
-    
+    }),
   });
-
-  useEffect(() => {
-    fetchOneClientData();
-  }, [clientId]);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <MdEdit className="w-4 h-4 cursor-pointer hover:scale-[1.1]" />
+        <IoIosAddCircle className="w-4 h-4 cursor-pointer hover:scale-[1.1]" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Modifier le client</DialogTitle>
+          <DialogTitle>Ajouter un client</DialogTitle>
           <DialogDescription>
-            Apportez des modifications au client ici. Cliquez sur Enregistrer lorsque vous avez terminé.
+            Ajoutez les détails du nouveau client ici. Cliquez sur Enregistrer lorsque vous avez terminé.
           </DialogDescription>
         </DialogHeader>
         <AutoForm

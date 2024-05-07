@@ -51,21 +51,6 @@ export const deleteOneClientData = async (id: any) => {
   }
 };
 
-// Fonction pour supprimer plusieurs clients
-export const clientsBulkDelete = async (clientIds: []) => {
-  const deleteUrl = `${BASE_URL}/bulk-delete-clients/`;
-  try {
-    const response = await axios.delete(deleteUrl, {
-      data: { clientIds },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response;
-  } catch (error) {
-    console.error("Une erreur s'est produite lors de la suppression des clients :", error);
-  }
-};
 
 // Fonction pour mettre à jour les données d'un client
 export const updateOneClientData = async (id: any, updatedData: any) => {
@@ -102,6 +87,36 @@ export const createClient = async (clientData: any) => {
     });
     return response;
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      console.error("Erreur de la requête :", axiosError.response?.data);
+      return axiosError.response;
+    } else {
     console.error("Une erreur s'est produite lors de la création du client :", error);
+    return error;
+    }
   }
 };
+
+
+
+
+
+/*
+***********************************
+// Fonction pour supprimer plusieurs clients
+export const clientsBulkDelete = async (clientIds: []) => {
+  const deleteUrl = `${BASE_URL}/bulk-delete-clients/`;
+  try {
+    const response = await axios.delete(deleteUrl, {
+      data: { clientIds },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la suppression des clients :", error);
+  }
+};
+*/

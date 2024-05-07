@@ -24,6 +24,7 @@ export default function EditUserForm({
 }) {
   const [formData, setFormData] = useState<any>({});
   const [msg,setMsg]=useState<string>();
+  
   const handleSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
     formData
   ) => {
@@ -66,15 +67,18 @@ export default function EditUserForm({
   const formSchema = z.object({
     name: z.string({
       required_error: "Nom requis.",
-    }),
+    })
+    .describe("Nom"),
     email: z
       .string({
         required_error: "Email requis.",
       })
+      
       .email({
         message: "Adresse email invalide.",
       }),
-    role: z.enum(["user", "admin"]),
+    role: z.enum(["user", "admin"])
+    .describe("Rôle"),
   });
 
 

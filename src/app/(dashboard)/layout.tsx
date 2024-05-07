@@ -101,7 +101,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
            <AccordionTrigger>
              <div className="flex items-center space-x-2">
                <MdCommute />
-               <span>Clients(dev)</span>
+               <span>Clients(test here)</span>
              </div>
            </AccordionTrigger>
            <AccordionContent>

@@ -110,16 +110,22 @@ export const updateVehicleWithPatch = async (id: any, updatedData: any) => {
 export const createVehicle = async (vehicleData: any) => {
   const createUrl = `${BASE_URL}/vehicules`;
   try {
-    const response = await axios.post(createUrl, vehicleData,{
-      headers:{
+    const response = await axios.post(createUrl, vehicleData, {
+      headers: {
         'Content-Type': 'application/json',
         'x-auth-token': `${token}`,
-
       }
-   } );
-
+    });
     return response;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la création du véhicule :", error);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      console.error("Erreur de la requête :", axiosError.response?.data);
+      return axiosError.response;
+    } else {
+      console.error("Une erreur s'est produite lors de la création du véhicule :", error);
+      return error;
+    }
   }
 };
+

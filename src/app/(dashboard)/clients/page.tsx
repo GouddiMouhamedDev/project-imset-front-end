@@ -15,6 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { IoIosAddCircle } from "react-icons/io";
 import EditClientForm from "@/components/editClientForm";
+import AddClientForm from "@/components/addClientForm";
 
 export default function Clients() {
   const [clientsData, setClientsData] = useState<ClientFormatData[]>([]);
@@ -37,7 +38,7 @@ export default function Clients() {
           Id: client._id,
           Nom: client.nom,
           Telephone: client.telephone,
-          IdentifiantFiscaleClient: client.identifiantFiscaleClient,
+          IdentifiantFiscale: client.identifiantFiscaleClient,
           Destination: client.destination,
           Solde: client.solde,
         }));
@@ -65,6 +66,9 @@ export default function Clients() {
         error
       );
     }
+  };
+  const handleEditSuccess= () => {
+    fetchData();
   };
 
   useEffect(() => {
@@ -100,12 +104,14 @@ export default function Clients() {
               {columnHeaders
               .filter((header) => header !== "Id") 
               .map((header) => (
-                <TableHead key={header}>{header}</TableHead>
+                <TableHead key={header}> 
+                {header === "IdentifiantFiscale" ? "Identifiant Fiscale" : header}
+                </TableHead>
               ))}
               <TableHead className="flex justify-center pt-3">
-                <Link href={"/clients/add"}>
-                  <IoIosAddCircle className=" w-4 h-4 cursor-pointer hover:scale-[1.2] " />
-                </Link>
+             <AddClientForm
+             onSubmitSuccess={handleEditSuccess}
+             />
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -123,7 +129,7 @@ export default function Clients() {
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                      <EditClientForm 
-                     clientId={row.id} 
+                     clientId={row.Id} 
                      onSubmitSuccess={handleEditFormSubmit}/>
                       {isAdmin && (
                         <AlertDialog>

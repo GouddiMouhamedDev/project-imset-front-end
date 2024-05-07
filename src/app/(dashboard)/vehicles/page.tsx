@@ -6,15 +6,15 @@ import {
   updateOneVehiclesData,
 } from "@/api/vehicles";
 import Blueloading from "@/components/loading";
-import { Button } from "@/components/ui/button";
+
 import SearchBar from "@/components/searchBar";
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { VehicleData, VehicleFormatedData } from "@/types/vehicles";
 import { IoIosAddCircle } from "react-icons/io";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
-import { Label } from "@radix-ui/react-dropdown-menu";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,6 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import EditVehicleForm from "@/components/editVehicleForm";
+import AddVehicleForm from "@/components/addVehicleForm";
 
 export default function Vehicles() {
   const [vehiclesData, setVehiclesData] = useState<VehicleFormatedData[]>([]);
@@ -116,10 +117,11 @@ export default function Vehicles() {
                 .map((header) => (
                   <TableHead key={header}>{header}</TableHead>
                 ))}
-              <TableHead className="flex justify-center pt-3">
-                <Link href={"/vehicles/add"}>
-                  <IoIosAddCircle className=" w-4 h-4 cursor-pointer hover:scale-[1.2] " />
-                </Link>
+              <TableHead className="flex justify-center pt-3 border-spacing-1">
+                <AddVehicleForm
+                 onSubmitSuccess={handleEditSuccess}/>
+               
+                  
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -140,7 +142,7 @@ export default function Vehicles() {
             vehicleId={row.Id}
             onSubmitSuccess={handleEditSuccess}
           />
-                      {userRole === "super-admin" && (
+                      {isAdmin && (
                        
                           <AlertDialog>
                             <AlertDialogTrigger asChild>

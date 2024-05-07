@@ -21,6 +21,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button"
+
 import { getUserInfoFromStorage } from "@/api/auth";
 
 export default function MonoDataTable({ data, link, handleDelete }: any) {
@@ -65,8 +67,7 @@ export default function MonoDataTable({ data, link, handleDelete }: any) {
       </Table>
       <div className="flex  justify-center  space-x-4 ">
         <Link href={link}>
-          {" "}
-          <EditIcon />{" "}
+          <Button>Modifier</Button>
         </Link>
        
       </div>
