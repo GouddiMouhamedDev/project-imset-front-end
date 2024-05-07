@@ -1,27 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  deleteOneFournisseurData,
-  getFournisseursData,
-} from "@/api/fournisseurs";
+  deleteOneProduitData,
+  getProduitsData,
+} from "@/api/produits";
 import Blueloading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
-import { FournisseurData, FournisseurFormatData } from "@/types/fournisseurs";
+import { ProduitData, ProduitFormatData } from "@/types/produits";
 import { MdDeleteForever } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import EditFournisseurForm from "@/components/editFournisseurForm";
-import AddFournisseurForm from "@/components/addFournisseurForm";
+import EditProduitForm from "@/components/editProduitForm";
+import AddProduitForm from "@/components/addProduitForm";
 
-export default function Fournisseurs() {
-  const [fournisseursData, setFournisseursData] = useState<FournisseurFormatData[]>([]);
+export default function Produits() {
+  const [produitsData, setProduitsData] = useState<any[]>([]);
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const columnHeaders = Object.keys(fournisseursData && fournisseursData.length > 0 ? fournisseursData[0] : {});
+  const columnHeaders = Object.keys(produitsData && produitsData.length > 0 ? produitsData[0] : {});
 
   const fetchData = async () => {
     try {
@@ -30,18 +30,22 @@ export default function Fournisseurs() {
         removeStorage();
         router.push("/login");
       } else {
-        const data: FournisseurData[] = await getFournisseursData();
-        const formattedData: FournisseurFormatData[] = data.map((fournisseur) => ({
-          Id: fournisseur._id,
-          Nom: fournisseur.nom,
-          Telephone: fournisseur.telephone,
-          IdentifiantFiscale: fournisseur.identifiantFiscaleFournisseur,
+        const data: any = await getProduitsData();
+        const formattedData:ProduitData [] = data.map((produit:any) => ({
+          _id:produit._id,
+          idProduit: produit.idProduit,
+          nom: produit.nom,
+          stock: produit.stock,
+          prixUnitaireHT: produit.prixUnitaireHT,
+          tauxTVA: produit.tauxTVA,
+          prixUnitaireTTC: produit.prixUnitaireTTC,
+          
         }));
-        setFournisseursData(formattedData);
+        setProduitsData(formattedData);
       }
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la récupération des données des fournisseurs :",
+        "Une erreur s'est produite lors de la récupération des données des produits :",
         error
       );
     } finally {
@@ -55,11 +59,11 @@ export default function Fournisseurs() {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteOneFournisseurData(id);
+      await deleteOneProduitData(id);
       await fetchData();
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la suppression du fournisseur :",
+        "Une erreur s'est produite lors de la suppression du produit :",
         error
       );
     }
@@ -92,7 +96,7 @@ export default function Fournisseurs() {
   return (
     <div className="min-h-screen p-4">
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Liste des fournisseurs</h1>
+        <h1 className="text-2xl font-semibold">Liste des produits</h1>
       </div>
       <SearchBar />
       <div className="rounded-md border mt-2">
@@ -100,23 +104,23 @@ export default function Fournisseurs() {
           <TableHeader>
             <TableRow>
               {columnHeaders
-                .filter((header) => header !== "Id")
+                .filter((header) => header !== "_id")
                 .map((header) => (
                   <TableHead key={header}>
-                    {header === "IdentifiantFiscale" ? "Identifiant Fiscale" : header}
+                    {header === "IdProduit" ? "ID Produit" : header}
                   </TableHead>
                 ))}
               <TableHead className="flex justify-center pt-3">
-                <AddFournisseurForm onSubmitSuccess={handleEditSuccess} />
+                <AddProduitForm onSubmitSuccess={handleEditSuccess} />
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {fournisseursData && fournisseursData.length > 0 ? (
-              fournisseursData.map((row: any, rowIndex: number) => (
+            {produitsData && produitsData.length > 0 ? (
+              produitsData.map((row: any, rowIndex: number) => (
                 <TableRow key={rowIndex}>
                   {columnHeaders
-                    .filter((header) => header !== "Id")
+                    .filter((header) => header !== "_id")
                     .map((header, columnIndex) => (
                       <TableCell key={columnIndex}>
                         <span>{row[header]}</span>
@@ -124,7 +128,7 @@ export default function Fournisseurs() {
                     ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
-                      <EditFournisseurForm fournisseurId={row.Id} onSubmitSuccess={handleEditFormSubmit} />
+                      <EditProduitForm _id={row._id} onSubmitSuccess={handleEditFormSubmit} />
                       {isAdmin && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
@@ -144,7 +148,7 @@ export default function Fournisseurs() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Annuler</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(row.Id)}>
+                              <AlertDialogAction onClick={() => handleDelete(row._id)}>
                                 Continuer
                               </AlertDialogAction>
                             </AlertDialogFooter>
