@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import EditProduitForm from "@/components/editProduitForm";
 import AddProduitForm from "@/components/addProduitForm";
+import { Card } from "@/components/ui/card";
 
 export default function Produits() {
   const [produitsData, setProduitsData] = useState<any[]>([]);
@@ -94,13 +95,16 @@ export default function Produits() {
   }
 
   return (
+    
     <div className="min-h-screen p-4">
+      
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Liste des produits</h1>
       </div>
       <SearchBar />
       <div className="rounded-md border mt-2">
         <Table>
+      
           <TableHeader>
             <TableRow>
               {columnHeaders
@@ -167,8 +171,10 @@ export default function Produits() {
               </TableRow>
             )}
           </TableBody>
+          
         </Table>
       </div>
     </div>
+
   );
 }
