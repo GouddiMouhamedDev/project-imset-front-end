@@ -20,6 +20,7 @@ import { getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { User } from "@/types/user";
 import { CgProfile } from "react-icons/cg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FaFileAlt } from "react-icons/fa";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -234,6 +235,22 @@ export default function Sidebar() {
             <AccordionContent>
               <Link
                 href="/produits "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
+                <FaListOl /> &nbsp;List
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-9">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+                <FaFileAlt />
+                <span>Bon Commande(D)</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/bonCommande "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
                 <FaListOl /> &nbsp;List

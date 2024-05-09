@@ -82,7 +82,7 @@ export default function Users() {
   useEffect(() => {
     (async () => {
       const fetchDataAfterAuth = async () => {
-        const isAuthenticated = auth(["admin", "super-admin"]);
+        const isAuthenticated = auth(["super-admin"]);
         if (isAuthenticated) {
           fetchData();
         } else {

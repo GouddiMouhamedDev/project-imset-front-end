@@ -5,8 +5,8 @@ import { ReactNode } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <>
-      <div className="flex h-screen mt-2 scroll-smooth">
+    <div className="flex h-screen mt-2 scroll-smooth">
+      
         <Sidebar />
 
         <div className="w-full flex flex-col mt-3">
@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
           <div className="flex-1 m-3  ">{children}</div>
         </div>
-      </div>
-    </>
+        </div>
+   
   );
 }
