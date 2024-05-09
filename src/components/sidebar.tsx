@@ -1,5 +1,10 @@
 "use client";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Link from "next/link";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaListOl } from "react-icons/fa";
@@ -25,9 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { Card } from "./ui/card";
-export default function Sidebar(){
-
-
+export default function Sidebar() {
   const [userInfo, setUserInfo] = useState<User | null>(null);
 
   const handleLogout = () => {
@@ -52,51 +55,56 @@ export default function Sidebar(){
     fetchUserInfo(); // Appel de la fonction pour récupérer les infos utilisateur
   }, []);
 
-    const userRole = getUserInfoFromStorage()?.role;
-    const isAdmin = ["super-admin", "admin", "user"].includes(userRole!);
-    
+  const userRole = getUserInfoFromStorage()?.role;
+  const isAdmin = ["super-admin", "admin", "user"].includes(userRole!);
+
   return (
     <Card className="w-1/6 hidden md:flex flex-col p-3 shadow h-screen sticky mt-3 ml-2 ">
-  <div className="flex flex-col items-center   space-y-10 pt-10 pb-10">
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Avatar className="border-2 hover:opacity-75 w-16  h-16">
-        <AvatarImage src="/img/Avatar-removebg-preview.png" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent>
-      <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>
-        <Link href={`/users/${userInfo?._id}`} className="flex items-center space-x-2">
-          <CgProfile />
-          <span>Profil</span>
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem>
-        <Link href="/login" onClick={handleLogout} className="flex items-center space-x-2">
-          <RiLogoutBoxFill />
-          <span>Déconnexion</span>
-        </Link>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-  <div className="text-2xl font-serif font-bold text-center">{userInfo?.name}</div>
+      <div className="flex flex-col items-center   space-y-10 pt-10 pb-10">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="border-2 hover:opacity-75 w-16  h-16">
+              <AvatarImage src="/img/Avatar-removebg-preview.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link
+                href={`/users/${userInfo?._id}`}
+                className="flex items-center space-x-2"
+              >
+                <CgProfile />
+                <span>Profil</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="/login"
+                onClick={handleLogout}
+                className="flex items-center space-x-2"
+              >
+                <RiLogoutBoxFill />
+                <span>Déconnexion</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <div className="text-2xl font-serif font-bold text-center">
+          {userInfo?.name}
+        </div>
+      </div>
 
-</div>
-
-
-
-
-  
-
-      
       <br />
       <div className="space-y-3">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
-            <Link href="/dashboard" className="flex items-center space-x-2 hover:underline">
+            <Link
+              href="/dashboard"
+              className="flex items-center space-x-2 hover:underline"
+            >
               <AiOutlineDashboard />
               <span>Dash(D)</span>
             </Link>
@@ -109,7 +117,10 @@ export default function Sidebar(){
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <Link href="/reset" className="flex items-center p-2 space-x-3 rounded-md">
+              <Link
+                href="/reset"
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
                 <MdLockReset />
                 &nbsp;Rst
               </Link>
@@ -126,12 +137,18 @@ export default function Sidebar(){
             <AccordionContent>
               {isAdmin && (
                 <>
-                  <Link href="/users" className="flex items-center p-2 space-x-2 rounded-md">
+                  <Link
+                    href="/users"
+                    className="flex items-center p-2 space-x-2 rounded-md"
+                  >
                     <FaListOl />
                     &nbsp;Liste
                   </Link>
 
-                  <Link href="/users/add" className="flex items-center p-2 space-x-3 rounded-md">
+                  <Link
+                    href="/users/add"
+                    className="flex items-center p-2 space-x-3 rounded-md"
+                  >
                     <IoMdAddCircleOutline />
                     &nbsp;Ajouter
                   </Link>
@@ -148,7 +165,10 @@ export default function Sidebar(){
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <Link href="/vehicles" className="flex items-center p-2 space-x-3 rounded-md">
+              <Link
+                href="/vehicles"
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
                 <FaListOl /> &nbsp;List
               </Link>
             </AccordionContent>
@@ -162,13 +182,14 @@ export default function Sidebar(){
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <Link href="/clients" className="flex items-center p-2 space-x-3 rounded-md">
+              <Link
+                href="/clients"
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
                 <FaListOl /> &nbsp;List
               </Link>
             </AccordionContent>
           </AccordionItem>
-
-         
 
           <AccordionItem value="item-6">
             <AccordionTrigger>
@@ -178,7 +199,10 @@ export default function Sidebar(){
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <Link href="/chauffeurs" className="flex items-center p-2 space-x-3 rounded-md">
+              <Link
+                href="/chauffeurs"
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
                 <FaListOl /> &nbsp;List
               </Link>
             </AccordionContent>
@@ -187,12 +211,15 @@ export default function Sidebar(){
           <AccordionItem value="item-7">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-              <TbTruckLoading />
+                <TbTruckLoading />
                 <span>Fournisseurs(T)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <Link href="/fournisseurs " className="flex items-center p-2 space-x-3 rounded-md">
+              <Link
+                href="/fournisseurs "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
                 <FaListOl /> &nbsp;List
               </Link>
             </AccordionContent>
@@ -200,12 +227,15 @@ export default function Sidebar(){
           <AccordionItem value="item-8">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-              <FaBoxes />
+                <FaBoxes />
                 <span>Produits(T)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <Link href="/produits " className="flex items-center p-2 space-x-3 rounded-md">
+              <Link
+                href="/produits "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
                 <FaListOl /> &nbsp;List
               </Link>
             </AccordionContent>
@@ -213,8 +243,5 @@ export default function Sidebar(){
         </Accordion>
       </div>
     </Card>
-   
-    
   );
-};
-
+}
