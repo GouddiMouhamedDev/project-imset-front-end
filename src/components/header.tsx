@@ -1,12 +1,43 @@
 "use client"
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import MediaPlayer from "@/components/MediaPlayer/MediaPlayer";
 import { ModeToggle } from "./modeToggle";
 import { Card } from "./ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import Link from "next/link";
+import { RiLogoutBoxFill } from "react-icons/ri";
+import { getUserInfoFromStorage, removeStorage } from "@/api/auth";
+import { User } from "@/types/user";
+import { CgProfile } from "react-icons/cg";
 
 export default function Header() {
   const [selectedChannelIndex, setSelectedChannelIndex] = useState<number>(0);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const userRole = getUserInfoFromStorage()?.role;
+  const isAdmin = ["super-admin", "admin", "user"].includes(userRole!);
+  const handleLogout = () => {
+    removeStorage();
+  };
+  
+  useEffect(() => {
+    // Récupération des informations de l'utilisateur après la connexion
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await getUserInfoFromStorage();
+        if (userData) {
+          setUserInfo(userData);
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des informations utilisateur : ",
+          error
+        );
+      }
+    };
 
+    fetchUserInfo(); // Appel de la fonction pour récupérer les infos utilisateur
+  }, []);
   const data = [
     {
       "id": "772df529-de8d-462d-88c1-e00ef66ff2b5",
@@ -47,17 +78,61 @@ export default function Header() {
   }, [data]);
 
   return (
-      <Card className="flex items-center justify-between m-4">
-        <div className=" flex items-center justify-between w-40 pl-6">
+      <Card className=" flex items-center   justify-around">
+       {/*Media player */}
+       <div className="flex items-center justify-between w-20 pl-2 transform scale-50">
           <MediaPlayer
             channel={data[selectedChannelIndex]}
             onChangeChannel={handleChangeChannel}
           />
         </div>
-        <img src="/img/logo1.png" width={250} height={100} alt="Logo" />
-        <div className="flex items-center mr-3">
-          <ModeToggle />
-        </div>
+         {/*logo */}
+        <img 
+     className="hidden md:block md:mx-auto max-md:hidden md:mb-2 max-md:pl-2 max-sm:hidden"
+        src="/img/logo1.png" 
+        width={250} height={100}
+         alt="Logo" />
+  {/*AVATAR */}
+<div className="">
+<DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="border-2 hover:opacity-75 w-16  h-16 mr-3">
+              <AvatarImage src="/img/Avatar-removebg-preview.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>{userInfo?.name}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link
+                href={`/users/${userInfo?._id}`}
+                className="flex items-center space-x-2"
+              >
+                <CgProfile />
+                <span>Profil</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="/login"
+                onClick={handleLogout}
+                className="flex items-center space-x-2"
+              >
+                <RiLogoutBoxFill />
+                <span>Déconnexion</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        </div>  
+     
+{/*bouton dark mode*/}
+        <div className="pr-3">
+        <ModeToggle />
+      </div>
+
+        
       </Card>
     
   );
