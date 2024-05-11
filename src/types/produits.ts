@@ -1,5 +1,7 @@
 export interface ProduitData {
-    _id: string;
+    
+     quantité: number;
+    produit: string;
     idProduit: number;
     nom: string;
     stock: number;
@@ -9,7 +11,10 @@ export interface ProduitData {
   
   }
 
-
+  export interface ProduitDataBon extends ProduitData {
+    quantite: number;
+    montantTTC : number
+  }
   export interface ProduitFormatData {
     Id: string;
     idProduit: number;

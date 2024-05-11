@@ -33,3 +33,10 @@ export interface ApiClientData{
 
 
 }
+
+
+export interface SlecteClientData{
+  Id: string;
+  Nom: string;
+  idClient : string;
+}

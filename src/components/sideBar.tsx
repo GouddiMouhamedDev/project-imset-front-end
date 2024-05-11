@@ -187,6 +187,13 @@ export default function Sidebar() {
               >
                 <FaListOl /> &nbsp;List
               </Link>
+              <Link
+                    href="/bonCommande/add"
+                    className="flex items-center p-2 space-x-3 rounded-md"
+                  >
+                    <IoMdAddCircleOutline />
+                    &nbsp;Ajouter
+                  </Link>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
