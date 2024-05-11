@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import "@/app/globals.css";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/sideBar";
 import { ReactNode } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

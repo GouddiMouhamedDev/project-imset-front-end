@@ -1,6 +1,6 @@
 "use client"
 
-import { ComboboxForm } from "@/components/selectClient";
+import { BonCommandeForm } from "@/components/bcForm";
 
 
 
@@ -12,7 +12,7 @@ export default function AddBc(){
     return(
 
         <>
-        <ComboboxForm/>
+        <BonCommandeForm/>
         </>
     );
 }

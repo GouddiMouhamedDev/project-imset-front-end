@@ -9,11 +9,13 @@ export const getClientsData = async () => {
   const getClientsUrl = `${BASE_URL}/clients`;
   try {
     const response = await axios.get(getClientsUrl, {
+  
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': `${token}`,
       },
     });
+
     return response.data;
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération des données des clients :", error);

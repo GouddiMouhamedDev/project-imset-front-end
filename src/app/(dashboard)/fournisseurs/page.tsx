@@ -70,20 +70,18 @@ export default function Fournisseurs() {
   };
 
   useEffect(() => {
-    (async () => {
-      const fetchDataAfterAuth = async () => {
-        const isAuthenticated = auth(["admin", "super-admin", "user"]);
-        if (isAuthenticated) {
-          fetchData();
-        } else {
-          removeStorage();
-          router.push("/login");
-        }
-      };
-
-      await fetchDataAfterAuth();
-    })();
-  });
+    const fetchDataAfterAuth = async () => {
+      const isAuthenticated = auth(["admin", "super-admin", "user"]);
+      if (isAuthenticated) {
+        await fetchData();
+      } else {
+        removeStorage();
+        router.push("/login");
+      }
+    };
+  
+    fetchDataAfterAuth();
+  }, []); 
 
   if (isLoading) {
     return <Blueloading />;

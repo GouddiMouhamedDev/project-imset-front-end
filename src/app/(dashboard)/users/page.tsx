@@ -90,11 +90,11 @@ export default function Users() {
           router.push("/login");
         }
       };
-
+  
       await fetchDataAfterAuth();
     })();
-  });
-
+  }, []);
+  
   if (isLoading) {
     return <Blueloading />;
   }

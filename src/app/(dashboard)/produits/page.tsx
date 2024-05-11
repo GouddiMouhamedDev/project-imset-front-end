@@ -85,10 +85,11 @@ export default function Produits() {
           router.push("/login");
         }
       };
-
+  
       await fetchDataAfterAuth();
     })();
-  });
+  }, []);
+  
 
   if (isLoading) {
     return <Blueloading />;

@@ -26,11 +26,6 @@ export default function Clients() {
 ;
   const fetchData = async () => {
     try {
-      const isAuthenticated = auth(["admin", "super-admin", "user"]);
-      if (!isAuthenticated) {
-        removeStorage();
-        router.push("/login");
-      } else {
         const data: ClientData[] = await getClientsData();
         const formatedData: ClientFormatData[] = data.map((client) => ({
           Id: client._id,
@@ -41,7 +36,7 @@ export default function Clients() {
           Solde: client.solde,
         }));
         setClientsData(formatedData);
-      }
+      
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des données des clients :",
@@ -70,20 +65,19 @@ export default function Clients() {
   };
 
   useEffect(() => {
-    (async () => {
-      const fetchDataAfterAuth = async () => {
-        const isAuthenticated = auth(["admin", "super-admin","user"]);
-        if (isAuthenticated) {
-          fetchData();
-        } else {
-          removeStorage();
-          router.push("/login");
-        }
-      };
-
-      await fetchDataAfterAuth();
-    })();
-  });
+    const fetchDataAfterAuth = async () => {
+      const isAuthenticated = auth(["admin", "super-admin", "user"]);
+      if (isAuthenticated) {
+        await fetchData();
+      } else {
+        removeStorage();
+        router.push("/login");
+      }
+    };
+  
+    fetchDataAfterAuth();
+  }, []);
+  
 
   if (isLoading) {
     return <Blueloading />;

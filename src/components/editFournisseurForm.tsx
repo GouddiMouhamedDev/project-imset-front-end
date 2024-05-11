@@ -13,7 +13,6 @@ import {
 import { MdEdit } from "react-icons/md";
 import { getOneFournisseurData, updateOneFournisseurData } from "@/api/fournisseurs";
 import { SubmitHandler } from "react-hook-form";
-import { FournisseurData } from "@/types/fournisseurs";
 
 export default function EditFournisseurForm({
   fournisseurId,

@@ -14,19 +14,29 @@ export default function AddProduitForm({ onSubmitSuccess }: { onSubmitSuccess: (
   const [isTVAEntered, setIsTVAEntered] = useState<boolean>(false);
 
   useEffect(() => {
+    // Vérifie si les données nécessaires sont présentes pour calculer le prix unitaire TTC
     if (formData.prixUnitaireHT && formData.tauxTVA && isTVAEntered && isHTActive && formData.tauxTVA !== 0) {
+      // Calcul du prix unitaire TTC
       const ttc = (formData.prixUnitaireHT * (1 + formData.tauxTVA / 100)).toFixed(3);
+      // Met à jour formData avec le prix unitaire TTC calculé
       setFormData({ ...formData, prixUnitaireTTC: parseFloat(ttc) });
     } else if (formData.prixUnitaireHT && isHTActive && !isTVAEntered) {
+      // Si aucune TVA n'est entrée, le prix unitaire TTC reste le même que le prix unitaire HT
       setFormData({ ...formData, prixUnitaireTTC: formData.prixUnitaireHT });
     }
+    
+    // Vérifie si les données nécessaires sont présentes pour calculer le prix unitaire HT
     if (formData.prixUnitaireTTC && formData.tauxTVA && isTVAEntered && !isHTActive && formData.tauxTVA !== 0) {
+      // Calcul du prix unitaire HT
       const ht = (formData.prixUnitaireTTC / (1 + formData.tauxTVA / 100)).toFixed(3);
+      // Met à jour formData avec le prix unitaire HT calculé
       setFormData({ ...formData, prixUnitaireHT: parseFloat(ht) });
     } else if (formData.prixUnitaireTTC && !isHTActive && !isTVAEntered) {
+      // Si aucune TVA n'est entrée, le prix unitaire HT reste le même que le prix unitaire TTC
       setFormData({ ...formData, prixUnitaireHT: formData.prixUnitaireTTC });
     }
   }, [formData.prixUnitaireHT, formData.prixUnitaireTTC, formData.tauxTVA, isTVAEntered, isHTActive]);
+  
 
   const handleSubmit: SubmitHandler<any> = async (e, formData) => {
     e.preventDefault();

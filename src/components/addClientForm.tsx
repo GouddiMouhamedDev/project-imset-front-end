@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form";
 import * as z from "zod";
 
@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SubmitHandler } from "react-hook-form";
-import { createClient } from "@/api/clients"; // Assurez-vous d'importer la fonction appropriée pour créer un client
+import { createClient } from "@/api/clients"; 
 import { IoIosAddCircle } from "react-icons/io";
 
 export default function AddClientForm({

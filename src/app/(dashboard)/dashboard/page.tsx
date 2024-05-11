@@ -16,11 +16,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     const isAuthenticated = auth(["admin", "super-admin", "user"]);
-    if(!isAuthenticated) {
+    if (!isAuthenticated) {
       removeStorage();
       router.push('/login');
     }
-  });
+  }, []);
 
   return (
     <main>

@@ -36,7 +36,7 @@ export default function BonCommandes() {
             Date: datePart,
             NomClient:
               getOneClientData(bonCommande.client)?.then((response) => {
-                console.log(response?.data.nom); // Ajout du console.log
+
                 return response?.data?.nom;
               }) || "",
             PrixTotalHT: bonCommande.prixTotalHT,
@@ -69,7 +69,7 @@ export default function BonCommandes() {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   if (isLoading) {
     return <BlueLoading />;

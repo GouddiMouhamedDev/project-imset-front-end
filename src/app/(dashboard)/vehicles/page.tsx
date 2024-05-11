@@ -92,7 +92,8 @@ export default function Vehicles() {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
+  
 
   
 

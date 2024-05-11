@@ -10,12 +10,13 @@ import { useRouter } from "next/navigation";
 export default function Register() {
   const router = useRouter();
   useEffect(() => {
-    const isAuthenticated = auth(["admin","super-admin"]);
-    if(!isAuthenticated) {
+    const isAuthenticated = auth(["admin", "super-admin"]);
+    if (!isAuthenticated) {
       removeStorage();
       router.push('/login');
     }
-  });
+  }, []);
+  
   
   return (
    

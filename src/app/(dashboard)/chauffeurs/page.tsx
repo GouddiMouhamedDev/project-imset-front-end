@@ -86,7 +86,7 @@ export default function Chauffeurs() {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   if (isLoading) {
     return <Blueloading />;

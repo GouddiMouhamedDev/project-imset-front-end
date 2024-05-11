@@ -64,9 +64,12 @@ export default function OneUser({ params: { id }}: {params: { id: string }}) {
         error
       );
     }}
-  useEffect(() => {
-    fetchDataAfterAuth();
-  });
+
+
+    useEffect(() => {
+      fetchDataAfterAuth();
+    }, []);
+    
 
   if (!oneUserData) {
     return <Blueloading />;

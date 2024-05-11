@@ -14,7 +14,7 @@ import {
 import { MdEdit } from "react-icons/md";
 import { getOneClientData, updateOneClientData } from "@/api/clients";
 import { SubmitHandler } from "react-hook-form";
-import { ClientData } from "@/types/clients";
+
 
 
 
