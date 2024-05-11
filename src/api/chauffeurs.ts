@@ -1,8 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { getAccessTokenFromStorage } from './auth';
-import { ChauffeurData } from "@/types/Chauffeur";
 
-const BASE_URL = "http://localhost:3000/api";
+
+const BASE_URL = "http://localhost:4000/api";
 const token = getAccessTokenFromStorage();
 
 // Fonction pour obtenir les données des chauffeurs

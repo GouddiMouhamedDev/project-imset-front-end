@@ -20,7 +20,7 @@ export default function Dashboard() {
       removeStorage();
       router.push('/login');
     }
-  }, []);
+  });
 
   return (
     <main>

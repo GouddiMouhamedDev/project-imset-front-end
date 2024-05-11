@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
+    DialogTrigger
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 
@@ -61,7 +61,7 @@ export default function MultiDataTable({ data, To }: any) {
                                             <DialogHeader>
                                                 <DialogTitle>Edit profile</DialogTitle>
                                                 <DialogDescription>
-                                                    Make changes to your profile here. Click save when you're done.
+                                                   
                                                 </DialogDescription>
                                             </DialogHeader>
                                             <div className="grid gap-4 py-4">
@@ -103,4 +103,5 @@ export default function MultiDataTable({ data, To }: any) {
             </Table>
         </div>
     );
+
 }

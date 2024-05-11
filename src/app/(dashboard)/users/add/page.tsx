@@ -15,7 +15,7 @@ export default function Register() {
       removeStorage();
       router.push('/login');
     }
-  },[]);
+  });
   
   return (
    

@@ -21,9 +21,6 @@ export interface ClientFormatData {
 
 
 export interface ApiClientData{
-  id: Key | null | undefined;
-
-
   _id: string;
   nom: string;
   telephone?: string;

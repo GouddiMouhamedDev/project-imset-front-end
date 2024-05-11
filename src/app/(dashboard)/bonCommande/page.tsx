@@ -69,7 +69,7 @@ export default function BonCommandes() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   if (isLoading) {
     return <BlueLoading />;

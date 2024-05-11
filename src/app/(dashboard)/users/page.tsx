@@ -35,7 +35,7 @@ export default function Users() {
   const userRole = getUserInfoFromStorage()?.role;
   const [usersData, setUsersData] = useState<UserFormatedData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
   const router = useRouter();
 
   const handleEditFormSubmit = () => {
@@ -93,7 +93,7 @@ export default function Users() {
 
       await fetchDataAfterAuth();
     })();
-  }, [selectedUserId]);
+  });
 
   if (isLoading) {
     return <Blueloading />;

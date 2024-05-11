@@ -2,7 +2,7 @@
 import axios, { AxiosError } from 'axios';
 import { getAccessTokenFromStorage} from './auth';
 
-const BASE_URL="http://localhost:3000/api"
+const BASE_URL="http://localhost:4000/api"
 const token=getAccessTokenFromStorage();
 
 

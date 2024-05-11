@@ -83,7 +83,7 @@ export default function Fournisseurs() {
 
       await fetchDataAfterAuth();
     })();
-  }, []);
+  });
 
   if (isLoading) {
     return <Blueloading />;

@@ -88,7 +88,7 @@ export default function Produits() {
 
       await fetchDataAfterAuth();
     })();
-  }, []);
+  });
 
   if (isLoading) {
     return <Blueloading />;

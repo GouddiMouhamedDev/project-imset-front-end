@@ -83,7 +83,7 @@ export default function Clients() {
 
       await fetchDataAfterAuth();
     })();
-  }, []);
+  });
 
   if (isLoading) {
     return <Blueloading />;
