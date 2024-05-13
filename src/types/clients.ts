@@ -39,4 +39,5 @@ export interface SlecteClientData{
   Id: string;
   Nom: string;
   idClient : string;
+  destination:string;
 }

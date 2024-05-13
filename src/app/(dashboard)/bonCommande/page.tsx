@@ -10,6 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BonCommandeData, BonCommandeFormatData } from "@/types/bonCommande";
 import { getOneClientData } from "@/api/clients";
+import { getOneUserData } from "@/api/users";
 
 export default function BonCommandes() {
   const [bonCommandesData, setBonCommandesData] = useState<any[]>([]);
@@ -26,27 +27,29 @@ export default function BonCommandes() {
         router.push("/login");
       } else {
         const data: BonCommandeData[] = await getBonCommandesData();
-        const formatedData = data.map((bonCommande) => {
+        const formattedData = await Promise.all(data.map(async (bonCommande) => {
           // Extraire la partie de la date sans l'heure
           const datePart = bonCommande.dateCommande.split("T")[0];
           
+          // Récupérer le nom du vendeur en fonction de son ID
+        
+          const vendeurName = (await getOneUserData(bonCommande.userId))?.name || "";
+   
           return {
             Id: bonCommande._id,
             IdBon: bonCommande.idBonCommande,
             Date: datePart,
-            NomClient:
-              getOneClientData(bonCommande.client)?.then((response) => {
-
-                return response?.data?.nom;
-              }) || "",
+            NomClient: (await getOneClientData(bonCommande.client))?.data?.nom || "",
+            destination: bonCommande.destination,
             PrixTotalHT: bonCommande.prixTotalHT,
             TVA: bonCommande.montantTVA,
             prixTotalTTC: bonCommande.prixTotalTTC,
+            Vendeur: vendeurName
           };
-        });
+        }));
         
         
-        setBonCommandesData(formatedData);
+        setBonCommandesData(formattedData);
       }
     } catch (error) {
       console.error(

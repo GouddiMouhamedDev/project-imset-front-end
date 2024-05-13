@@ -20,7 +20,6 @@ export const activateEmail = async (token:string) => {
       },
     });
 
-    console.log('Activation réussie !');
     return response;
   } catch (error) {
     console.error('Une erreur s\'est produite lors de l\'activation de l\'email :', error);

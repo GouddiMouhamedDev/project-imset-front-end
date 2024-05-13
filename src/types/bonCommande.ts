@@ -7,6 +7,8 @@ export interface BonCommandeData {
     prixTotalTTC: number;
     dateCommande: string;
     idBonCommande: number;
+    destination:string;
+    userId:string;
   }
 
 
@@ -21,4 +23,6 @@ export interface BonCommandeFormatData {
     prixTotalTTC: number;
     dateCommande: string;
     idBonCommande: number;
+    destination:string;
+    userId:string;
   }  
