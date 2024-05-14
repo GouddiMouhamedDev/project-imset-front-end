@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import {
   Popover,
   PopoverContent,
@@ -30,7 +31,7 @@ import { useEffect, useState } from "react";
 import { ApiClientData, SlecteClientData } from "@/types/clients";
 import { Calendar } from "./ui/calendar";
 import { getClientsData } from "@/api/clients";
-import { auth, removeStorage } from "@/api/auth";
+import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { ProduitData, ProduitDataBon } from "@/types/produits";
 import { getProduitsData } from "@/api/produits";
 import {
@@ -44,7 +45,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createBonCommande } from "@/api/bonCommandes";
-import { format } from 'date-fns';
+import { format, getDate } from "date-fns";
+import { Input } from "./ui/input";
+import { MdDeleteForever } from "react-icons/md";
+import { stringify } from "querystring";
+import { Card } from "./ui/card";
 
 const FormSchema = z.object({
   client: z.string({
@@ -64,13 +69,113 @@ const FormSchema = z.object({
       montantTTC: z.number(),
     })
   ),
+  destination: z.string().optional(),
 });
 
 export function BonCommandeForm() {
   const [clientsData, setClientsData] = useState<SlecteClientData[]>([]);
   const [produitData, setProduitData] = useState<ProduitData[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<ProduitDataBon[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProduitDataBon[]>(
+    []
+  );
   const router = useRouter();
+  const [destination, setDestination] = useState("");
+  const [prixTotalHT, setPrixTotalHT] = useState(0);
+  const [prixTotalTTC, setPrixTotalTTC] = useState(0);
+  const [montantTVA, setMontantTVA] = useState(0);
+
+  const [isHTActive, setIsHTActive] = useState(false);
+
+  const calculateTotals = (products: ProduitDataBon[]) => {
+    let prixTotalHT = 0;
+    let prixTotalTTC = 0;
+    let montantTVA = 0;
+
+    products.forEach((product) => {
+      prixTotalHT += product.prixUnitaireHT * product.quantite;
+      prixTotalTTC += product.prixUnitaireTTC * product.quantite;
+      montantTVA +=
+        (product.prixUnitaireTTC - product.prixUnitaireHT) * product.quantite;
+    });
+
+    // Arrondir les totaux à trois chiffres après la virgule
+    prixTotalHT = parseFloat(prixTotalHT.toFixed(3));
+    prixTotalTTC = parseFloat(prixTotalTTC.toFixed(3));
+    montantTVA = parseFloat(montantTVA.toFixed(3));
+
+    return { prixTotalHT, prixTotalTTC, montantTVA };
+  };
+
+  const updateProduct = (
+    index: number,
+    key: keyof ProduitDataBon,
+    value: string | number
+  ) => {
+    const updatedProducts: ProduitDataBon[] = [...selectedProducts];
+    updatedProducts[index] = {
+      ...updatedProducts[index],
+      [key]: value,
+    };
+
+    // Mise à jour des autres champs en fonction du champ modifié
+    const updatedProduct = updatedProducts[index];
+    if (
+      key === "prixUnitaireHT" ||
+      key === "prixUnitaireTTC" ||
+      key === "tauxTVA" ||
+      key === "quantite"
+    ) {
+      const prixUnitaireHT = parseFloat(
+        updatedProduct.prixUnitaireHT.toString()
+      );
+      const prixUnitaireTTC = parseFloat(
+        updatedProduct.prixUnitaireTTC.toString()
+      );
+      const tauxTVA = parseFloat(updatedProduct.tauxTVA.toString());
+      const quantite = parseFloat(updatedProduct.quantite.toString());
+
+      if (isHTActive) {
+        // Si le HT est actif, calcule le TTC
+        const prixUnitaireTTC = (prixUnitaireHT * (1 + tauxTVA / 100)).toFixed(
+          3
+        );
+        const montantTTC = (parseFloat(prixUnitaireTTC) * quantite).toFixed(3);
+        updatedProducts[index] = {
+          ...updatedProducts[index],
+          prixUnitaireTTC: parseFloat(prixUnitaireTTC),
+          montantTTC: parseFloat(montantTTC),
+        };
+      } else {
+        // Sinon, calcule le HT
+        const prixUnitaireHT = (prixUnitaireTTC / (1 + tauxTVA / 100)).toFixed(
+          3
+        );
+        const montantTTC = (prixUnitaireTTC * quantite).toFixed(3);
+        updatedProducts[index] = {
+          ...updatedProducts[index],
+          prixUnitaireHT: parseFloat(prixUnitaireHT),
+          montantTTC: parseFloat(montantTTC),
+        };
+      }
+    }
+
+    setSelectedProducts(updatedProducts);
+
+    // Calculer les totaux et mettre à jour les états
+    const { prixTotalHT, prixTotalTTC, montantTVA } =
+      calculateTotals(updatedProducts);
+    // Mettre à jour les états des totaux
+    // Je suppose que vous avez des états pour stocker ces valeurs, sinon, vous devez les ajouter.
+    setPrixTotalHT(prixTotalHT);
+    setPrixTotalTTC(prixTotalTTC);
+    setMontantTVA(montantTVA);
+  };
+
+  const toggleSlider = () => {
+    setIsHTActive(!isHTActive);
+  };
+
+  const [vendeurId, setVendeurId] = useState("");
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -78,48 +183,76 @@ export function BonCommandeForm() {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    const { date, ...dataWithDate } = { ...data, dateCommande: data.date };
-
-    let prixTotalHT = 0;
-    let montantTVA = 0;
-    let prixTotalTTC = 0;
-  
-    const produits = selectedProducts.map((product) => {
-      const montantTTC = product.prixUnitaireTTC * product.quantite;
-      prixTotalHT += product.prixUnitaireHT * product.quantite;
-      montantTVA += montantTTC - product.prixUnitaireHT * product.quantite;
-      prixTotalTTC += montantTTC;
-  
-      return {
-        produit: product.produit,
-        idProduit: product.idProduit,
-        nomProduit: product.nom,
-        quantite: product.quantite,
-        prixUnitaireHT: product.prixUnitaireHT,
-        prixUnitaireTTC: product.prixUnitaireTTC,
-        tauxTVA: product.tauxTVA,
-        montantTTC: montantTTC,
-      };
-    });
-  
-    const dataWithProducts = { ...dataWithDate, produits, prixTotalHT, montantTVA, prixTotalTTC };
-
     try {
-      const response = await createBonCommande(dataWithProducts);
-      console.log("response Bon de commande créé :", response);
+      // Créer un tableau pour stocker les produits
+
+      const produitsData = selectedProducts.map((product) => ({
+        produit: product.produit, // Utiliser l'ID du produit
+        idProduit: product.idProduit, // Utiliser l'ID du produit
+        nomProduit: product.nom, // Utiliser le nom du produit
+        quantite: product.quantite, // Utiliser la quantité du produit
+        prixUnitaireHT: product.prixUnitaireHT, // Utiliser le prix unitaire HT du produit
+        prixUnitaireTTC: product.prixUnitaireTTC, // Utiliser le prix unitaire TTC du produit
+        tauxTVA: product.tauxTVA, // Utiliser le taux TVA du produit
+        montantTTC: product.montantTTC, // Utiliser le montant TTC du produit
+      }));
+
+      // Créer un objet contenant les données de la commande avec le tableau de produits
+      const bonCommandeData = {
+        dateCommande: format(data.date, "yyyy-MM-dd"), // Utiliser la date sélectionnée
+        client: data.client, // Ajouter l'ID du client
+        userId: vendeurId, // Utiliser l'ID du vendeur
+        destination: destination, // Utiliser la destination sélectionnée
+        produits: produitsData, // Utiliser le tableau de produits
+        prixTotalHT: prixTotalHT, // Utiliser le prix total HT calculé
+        montantTVA: montantTVA, // Utiliser le montant TVA calculé
+        prixTotalTTC: prixTotalTTC, // Utiliser le prix total TTC calculé
+      };
+      console.log("date", bonCommandeData.dateCommande);
+      // Envoyer les données au backend
+      const response = await createBonCommande(bonCommandeData);
+
+      // Afficher la réponse du backend
+      console.log("Réponse du backend :", response);
     } catch (error) {
-      console.error("Une erreur s'est produite lors de la création du bon de commande :", error);
+      // Gérer les erreurs en cas d'échec de l'envoi
+      console.error(
+        "Une erreur s'est produite lors de la création du bon de commande :",
+        error
+      );
     }
   };
 
   const addSelectedProduct = (produit: ProduitData) => {
-    const montantTTC = produit.prixUnitaireTTC * (produit.quantité ?? 1);
+    const montantTTC = produit.prixUnitaireTTC * (produit.quantite ?? 1);
     const newProduct: ProduitDataBon = {
       ...produit,
-      quantite: produit.quantité ?? 1,
+      quantite: produit.quantite ?? 1,
       montantTTC: montantTTC,
+      produit: produit.produit,
     };
-    setSelectedProducts([...selectedProducts, newProduct]);
+    const updatedProducts = [...selectedProducts, newProduct];
+    setSelectedProducts(updatedProducts);
+
+    // Mettre à jour les totaux après l'ajout d'un produit
+    const { prixTotalHT, prixTotalTTC, montantTVA } =
+      calculateTotals(updatedProducts);
+    setPrixTotalHT(prixTotalHT);
+    setPrixTotalTTC(prixTotalTTC);
+    setMontantTVA(montantTVA);
+  };
+
+  const deleteSelectedProduct = (index: number) => {
+    const updatedProducts = [...selectedProducts];
+    updatedProducts.splice(index, 1);
+    setSelectedProducts(updatedProducts);
+
+    // Mettre à jour les totaux après la suppression d'un produit
+    const { prixTotalHT, prixTotalTTC, montantTVA } =
+      calculateTotals(updatedProducts);
+    setPrixTotalHT(prixTotalHT);
+    setPrixTotalTTC(prixTotalTTC);
+    setMontantTVA(montantTVA);
   };
 
   const fetchProductsData = async () => {
@@ -133,7 +266,7 @@ export function BonCommandeForm() {
       );
     }
   };
-  
+
   const fetchClientData = async () => {
     try {
       const data: ApiClientData[] = await getClientsData();
@@ -141,6 +274,7 @@ export function BonCommandeForm() {
         Id: client._id,
         Nom: client.nom,
         idClient: client.idClient,
+        destination: client.destination,
       }));
       setClientsData(formatedData);
     } catch (error) {
@@ -156,6 +290,8 @@ export function BonCommandeForm() {
       const isAuthenticated = auth(["admin", "super-admin", "user"]);
       if (isAuthenticated) {
         await Promise.all([fetchProductsData(), fetchClientData()]);
+        const vendeurId = getUserInfoFromStorage()?._id;
+        setVendeurId(vendeurId!);
       } else {
         removeStorage();
         router.push("/login");
@@ -168,66 +304,96 @@ export function BonCommandeForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="flex flex-row">
-          <FormField
-            control={form.control}
-            name="client"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Client : </FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "w-[200px] justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value
-                          ? clientsData.find(
-                              (client) => client.Id === field.value
-                            )?.Nom
-                          : "Select client"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Search client..." />
-                      <CommandEmpty>No client found.</CommandEmpty>
-                      <CommandGroup>
-                        {clientsData.map((client) => (
-                          <CommandItem
-                            value={`${client.idClient}-${client.Nom}`}
-                            key={client.Id}
-                            onSelect={() => {
-                              form.setValue("client", client.Id);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                client.Id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {`${client.idClient} - ${client.Nom}`}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+        <div className="flex flex-wrap justify-around">
+          <div className="space-y-4">
+          
+            {/**client */}
+            <FormField
+              control={form.control}
+              name="client"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Client : </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[250px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? clientsData.find(
+                                (client) => client.Id === field.value
+                              )?.Nom
+                            : "Sélectionner un client"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Recherche Client..." />
+                        <CommandEmpty>Aucun Client trouvé.</CommandEmpty>
+                        <CommandGroup>
+                          {clientsData.map((client) => (
+                            <CommandItem
+                              value={`${client.idClient}-${client.Nom}`}
+                              key={client.Id}
+                              onSelect={() => {
+                                form.setValue("client", client.Id);
+                                form.setValue(
+                                  "destination",
+                                  client.destination || ""
+                                );
+                                setDestination(client.destination || "");
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  client.Id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {`${client.idClient} - ${client.Nom}`}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/**destination clients  */}
+            <FormField
+              control={form.control}
+              name="destination"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Destination :</FormLabel>
+                  <Input
+                    {...field}
+                    defaultValue={destination}
+                    onChange={(e) => {
+                      form.setValue("destination", e.target.value);
+                      setDestination(e.target.value);
+                    }}
+                    className="form-input"
+                  />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+          {/**date */}
           <FormField
             control={form.control}
             name="date"
@@ -237,20 +403,20 @@ export function BonCommandeForm() {
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
-                   <Button
-        variant="outline"
-        className={cn(
-          "w-[240px] pl-3 text-left font-normal",
-          !field.value && "text-muted-foreground"
-        )}
-      >
-        {field.value ? (
-          format(field.value, 'dd MMMM yyyy') // Removed timeZone option
-        ) : (
-          <span>Sélectionnez une date</span>
-        )}
-        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-      </Button>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "dd MMMM yyyy") // Removed timeZone option
+                        ) : (
+                          <span>Sélectionnez une date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -262,103 +428,215 @@ export function BonCommandeForm() {
                     />
                   </PopoverContent>
                 </Popover>
-                <FormDescription>
-                  Sélectionnez une date pour la commande.
-                </FormDescription>
+                <FormDescription></FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
 
-        <FormField
-          control={form.control}
-          name="produits"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Produit :</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    className={cn(
-                      "w-[200px] justify-between",
-                      !field.value.length && "text-muted-foreground"
-                    )}
-                  >
-                    {field.value.length > 0
-                      ? `${field.value.length} produit(s) sélectionné(s)`
-                      : "Sélectionner des produits"}
-                    {field.value.length > 0 && (
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Rechercher un produit..." />
-                    <CommandEmpty>Aucun produit trouvé.</CommandEmpty>
-                    <CommandGroup>
-                      {produitData.map((produit) => (
-                        <CommandItem
-                          value={`${produit.idProduit} - ${produit.nom}`}
-                          key={produit.produit}
-                          onSelect={() => {
-                            addSelectedProduct(produit);
-                          }}
-                        >
-                          {`${produit.idProduit} - ${produit.nom}`}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/**produits */}
+          <FormField
+            control={form.control}
+            name="produits"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Produit :</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-[250px] justify-between",
+                        !field.value.length && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value.length > 0
+                        ? `${field.value.length} produit(s) sélectionné(s)`
+                        : "Sélectionner des produits"}
+                      {field.value.length > 0 && (
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      )}
+                    </Button>
+                  </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Rechercher un produit..." />
+                      <CommandEmpty>Aucun produit trouvé.</CommandEmpty>
+                      <CommandGroup>
+                        {produitData.map((produit) => (
+                          <CommandItem
+                            value={`${produit.idProduit} - ${produit.nom}`}
+                            key={produit.idProduit}
+                            onSelect={() => {
+                              addSelectedProduct(produit);
+                            }}
+                          >
+                            {`${produit.idProduit} - ${produit.nom}`}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+      </div>
+          {/** Card info */}
+          <div className="  space-x-10 text-sm ">
+            <Card className="p-6  space-y-3">
+              <div>Total HT : {prixTotalHT}</div>
+              <div>Total TVA: {montantTVA}</div>
+              <div>Total TTC: {prixTotalTTC}</div>
+              {/** slider */}
+              <div className="inline-flex justify-center space-x-2">
+                <label htmlFor="toggleSlider">HT</label>
+                <div
+                  className="relative w-10 h-5 cursor-pointer"
+                  onClick={toggleSlider}
+                >
+                  <div
+                    className={`absolute left-0 w-full h-full bg-gray-600 rounded-full p-1 `}
+                  ></div>
+                  <div
+                    className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                      isHTActive ? "" : "translate-x-full"
+                    }`}
+                  ></div>
+                </div>
+                <label htmlFor="toggleSlider">TTC</label>
+              </div>
+            </Card>
+          </div>
+        </div>
+        {/** tableau des produits */}
         <FormItem>
           <SelectedProductsTable
             products={selectedProducts.map((product) => ({
               ...product,
               quantite: product.quantite ?? 1,
-              montantTTC: product.montantTTC ?? (product.prixUnitaireTTC * (product.quantite ?? 1)),
+              montantTTC:
+                product.montantTTC ??
+                product.prixUnitaireTTC * (product.quantite ?? 1),
             }))}
+            onDeleteProduct={deleteSelectedProduct}
+            updateProduct={updateProduct}
+            isHTActive={isHTActive}
           />
         </FormItem>
-        <Button type="submit">Soumettre</Button>
+
+        <div className="flex justify-end pr-5">
+          {" "}
+          <Button type="submit">Soumettre</Button>
+        </div>
       </form>
     </Form>
   );
 }
 
-function SelectedProductsTable({ products }: { products: ProduitDataBon[] }) {
+interface SelectedProductsTableProps {
+  products: ProduitDataBon[];
+  onDeleteProduct: (index: number) => void;
+  updateProduct: (
+    index: number,
+    key: keyof ProduitDataBon,
+    value: string | number
+  ) => void;
+  isHTActive: boolean;
+}
+
+function SelectedProductsTable({
+  products,
+  onDeleteProduct,
+  updateProduct,
+  isHTActive,
+}: SelectedProductsTableProps) {
   return (
     <Table>
-      <TableCaption>Liste des produits sélectionnés</TableCaption>
+      <TableCaption></TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>ID Produit</TableHead>
+          <TableHead>Ref Produit</TableHead>
           <TableHead>Nom</TableHead>
           <TableHead>Prix unitaire HT</TableHead>
           <TableHead>Taux TVA</TableHead>
           <TableHead>Prix unitaire TTC</TableHead>
           <TableHead>Quantité</TableHead>
           <TableHead>Montant TTC</TableHead>
+          <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {products.map((product, index) => (
-          <TableRow key={index}>
+          <TableRow key={product.produit}>
             <TableCell>{product.idProduit}</TableCell>
-            <TableCell>{product.nom}</TableCell>
-            <TableCell>{product.prixUnitaireHT}</TableCell>
-            <TableCell>{product.tauxTVA}</TableCell>
-            <TableCell>{product.prixUnitaireTTC}</TableCell>
-            <TableCell>{product.quantite}</TableCell>
+            <TableCell>
+              <Input
+                type="text"
+                value={product.nom}
+                onChange={(e) => updateProduct(index, "nom", e.target.value)}
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="number"
+                value={product.prixUnitaireHT}
+                onChange={(e) =>
+                  updateProduct(
+                    index,
+                    "prixUnitaireHT",
+                    parseFloat(e.target.value)
+                  )
+                }
+                disabled={!isHTActive}
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="number"
+                value={product.tauxTVA}
+                onChange={(e) =>
+                  updateProduct(index, "tauxTVA", parseFloat(e.target.value))
+                }
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="number"
+                value={product.prixUnitaireTTC}
+                onChange={(e) =>
+                  updateProduct(
+                    index,
+                    "prixUnitaireTTC",
+                    parseFloat(e.target.value)
+                  )
+                }
+                disabled={isHTActive}
+              />
+            </TableCell>
+            <TableCell>
+              <Input
+                type="number"
+                value={product.quantite}
+                onChange={(e) =>
+                  updateProduct(index, "quantite", parseInt(e.target.value))
+                }
+              />
+            </TableCell>
             <TableCell>{product.montantTTC}</TableCell>
+            <TableCell>
+              <button
+                type="button"
+                onClick={() => onDeleteProduct(index)}
+                className="w-4 h-4 cursor-pointer hover:scale-[1.1]"
+              >
+                <MdDeleteForever />
+              </button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
