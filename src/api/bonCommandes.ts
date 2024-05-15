@@ -21,6 +21,25 @@ export const getBonCommandesData = async () => {
   }
 };
 
+
+
+// Fonction pour récupérer les données d'un bon de commande spécifique
+export const getOneBonCommandeData = async (id: any) => {
+  const getOneBonCommandeUrl = `${BASE_URL}/bon-commande/${id}`;
+  try {
+    const response = await axios.get(getOneBonCommandeUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': `${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la récupération des données du bon de commande :", error);
+  }
+};
+
 // Fonction pour supprimer une bonne commande
 export const deleteBonCommandeData = async (id: any) => {
   const deleteUrl = `${BASE_URL}/bon-commande/${id}`;

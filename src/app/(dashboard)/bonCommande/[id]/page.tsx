@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -29,7 +30,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ApiClientData, SlecteClientData } from "@/types/clients";
-import { Calendar } from "./ui/calendar";
 import { getClientsData } from "@/api/clients";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { ProduitData, ProduitDataBon } from "@/types/produits";
@@ -44,20 +44,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { createBonCommande } from "@/api/bonCommandes";
+import { createBonCommande, getOneBonCommandeData } from "@/api/bonCommandes";
 import { format, getDate } from "date-fns";
-import { Input } from "./ui/input";
 import { MdDeleteForever } from "react-icons/md";
-import { Card } from "./ui/card";
 import { toast } from "sonner";
-import { Icons } from "./icons";
+import { Input } from "@/components/ui/input";
+import { Icons } from "@/components/icons";
+import { Calendar } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
+import { BonCommandeData } from "@/types/bonCommande";
 
-
-//********************************************************************************************************************************/
-export function BonCommandeForm() {
-
-
-
+export default function EditBonCommande({
+  params: { id },
+}: {
+  params: { id: string };
+}) {
   const FormSchema = z.object({
     client: z.string({
       required_error: "Veuillez sélectionner un client.",
@@ -79,15 +80,12 @@ export function BonCommandeForm() {
     destination: z.string().optional(),
   });
 
-
-
-  
   const [clientsData, setClientsData] = useState<SlecteClientData[]>([]);
   const [produitData, setProduitData] = useState<ProduitData[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<ProduitDataBon[]>(
     []
   );
-  const [isLoading, setIsLoading] =useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const [destination, setDestination] = useState("");
   const [prixTotalHT, setPrixTotalHT] = useState(0);
@@ -96,6 +94,8 @@ export function BonCommandeForm() {
   const [responseStatus, setResponseStatus] = useState(-1);
   const [isHTActive, setIsHTActive] = useState(false);
   const [msg, setMsg] = useState<string>("");
+  const [vendeurId, setVendeurId] = useState("");
+
   const calculateTotals = (products: ProduitDataBon[]) => {
     let prixTotalHT = 0;
     let prixTotalTTC = 0;
@@ -185,8 +185,6 @@ export function BonCommandeForm() {
     setIsHTActive(!isHTActive);
   };
 
-  const [vendeurId, setVendeurId] = useState("");
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: { produits: [] },
@@ -194,7 +192,7 @@ export function BonCommandeForm() {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsLoading(true);
-    try {
+   {/** try {
       // Créer un tableau pour stocker les produits
 
       const produitsData = selectedProducts.map((product) => ({
@@ -242,7 +240,7 @@ export function BonCommandeForm() {
         "Une erreur s'est produite lors de la création du bon de commande :",
         error
       );
-    }
+    } */}
     setIsLoading(false);
   };
 
@@ -308,11 +306,32 @@ export function BonCommandeForm() {
     }
   };
 
+  const fetchOneBonCommande = async (id: string) => {
+    try {
+      const data: BonCommandeData = await getOneBonCommandeData(id);
+      setSelectedProducts(data.produits);
+      setDestination(data.destination);
+      setPrixTotalHT(data.prixTotalHT);
+      setPrixTotalTTC(data.prixTotalTTC);
+      setMontantTVA(data.montantTVA);
+      //setDate(data.dateCommande);
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la récupération des données d'un bon de commande :",
+        error
+      );
+    }
+  };
+
   useEffect(() => {
     const fetchDataAfterAuth = async () => {
       const isAuthenticated = auth(["admin", "super-admin", "user"]);
       if (isAuthenticated) {
-        await Promise.all([fetchProductsData(), fetchClientData()]);
+        await Promise.all([
+          fetchProductsData(),
+          fetchClientData(),
+          fetchOneBonCommande(id),
+        ]);
         const vendeurId = getUserInfoFromStorage()?._id;
         setVendeurId(vendeurId!);
       } else {
@@ -551,20 +570,20 @@ export function BonCommandeForm() {
           />
         </FormItem>
         <div className="flex justify-end pr-5">
-  <Button type="submit" disabled={isLoading}  className=" w-32 flex items-center justify-center s">
-    {isLoading ? (
-      <>
-        <Icons.spinner className="mr-2 h-4 w-30 animate-spin" />
-      
-      </>
-    ) : (
-      "Enregistrer"
-    )}
-  </Button>
-</div>
-
-
-
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className=" w-32 flex items-center justify-center s"
+          >
+            {isLoading ? (
+              <>
+                <Icons.spinner className="mr-2 h-4 w-30 animate-spin" />
+              </>
+            ) : (
+              "Enregistrer"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );
@@ -665,7 +684,6 @@ function SelectedProductsTable({
                 type="button"
                 onClick={() => onDeleteProduct(index)}
                 className="w-4 h-4 cursor-pointer hover:scale-[1.1]"
-                
               >
                 <MdDeleteForever />
               </button>

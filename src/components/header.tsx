@@ -39,6 +39,13 @@ export default function Header() {
     fetchUserInfo(); // Appel de la fonction pour récupérer les infos utilisateur
   }, []);
   const data = [
+     {
+      "id": "mosaique-id",
+      "url": "https://radio.mosaiquefm.net/mosalive",
+      "cover": "http://mosaique-url.com/cover.jpg",
+      "title": "Mosaique",
+      "program": "Mosaique Program"
+    },
     {
       "id": "772df529-de8d-462d-88c1-e00ef66ff2b5",
       "url": "https://s42.myradiostream.com/29400/listen.mp3",
@@ -59,14 +66,8 @@ export default function Header() {
       "cover": "https://www.radio.es/images/broadcasts/e5/6b/1373/2/c300.png",
       "title": "Disco Ball",
       "program": "Best of Disco Ball 70's-80's"
-    },
-    {
-      "id": "mosaique-id",
-      "url": "https://radio.mosaiquefm.net/mosalive",
-      "cover": "http://mosaique-url.com/cover.jpg",
-      "title": "Mosaique",
-      "program": "Mosaique Program"
     }
+   
   ];
 
   const handleChangeChannel = useCallback((forward: boolean) => {

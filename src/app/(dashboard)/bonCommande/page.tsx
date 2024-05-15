@@ -5,19 +5,21 @@ import { auth, removeStorage } from "@/api/auth";
 import { getBonCommandesData, deleteBonCommandeData } from "@/api/bonCommandes";
 import BlueLoading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BonCommandeData, BonCommandeFormatData } from "@/types/bonCommande";
 import { getOneClientData } from "@/api/clients";
 import { getOneUserData } from "@/api/users";
+import { IoIosAddCircle } from "react-icons/io";
+import Link from "next/link";
 
 export default function BonCommandes() {
   const [bonCommandesData, setBonCommandesData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const columnHeaders = Object.keys(bonCommandesData && bonCommandesData.length > 0 ? bonCommandesData[0] : {});
-
+  
   
   const fetchData = async () => {
     try {
@@ -72,6 +74,7 @@ export default function BonCommandes() {
 
   useEffect(() => {
     fetchData();
+   
   }, []);
 
   if (isLoading) {
@@ -95,7 +98,9 @@ export default function BonCommandes() {
                   {header}</TableHead>
               ))}
               <TableHead>
-                Action  {/** link to Add Bon Commande Page */}
+              <Link href={"/bonCommande/add"}>
+                  <IoIosAddCircle className=" w-4 h-4 cursor-pointer hover:scale-[1.2] " />
+                </Link>
                 </TableHead>
             </TableRow>
           </TableHeader>
@@ -114,6 +119,11 @@ export default function BonCommandes() {
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                       {/** link to edit bon Commande page */}
+                      <Link href={`/bonCommande/${row.Id}`}>
+                      <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
+                      <MdEdit />
+                      </div>
+                        </Link>
                       
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
