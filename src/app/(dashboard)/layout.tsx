@@ -3,7 +3,20 @@ import "@/app/globals.css";
 import Sidebar from "@/components/sideBar";
 import { ReactNode } from "react";
 
+
+
+
+
+
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+
+
+
+
+
+
+  
   return (
     <div className="flex  mt-2 scroll-smooth">
       

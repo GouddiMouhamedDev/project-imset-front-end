@@ -63,6 +63,7 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FiUsers />
+                <div/>
                 <span>Utilisateurs  </span>
               </div>
             </AccordionTrigger>
@@ -198,6 +199,7 @@ export default function Sidebar() {
           </AccordionItem>
         </Accordion>
       </div>
+
     </Card>
   );
 }
