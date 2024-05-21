@@ -20,7 +20,7 @@ export default function EditUser({ params: { id } }: { params: { id: string } } 
     if (id === userId) {
       fetchData();
     } else {
-      const isAuthenticated = auth(["admin", "super-admin"]);
+      const isAuthenticated = auth(["super-admin"]);
       if (isAuthenticated) {
         fetchData(); // Exécutez fetchData si l'utilisateur est authentifié
       } else {

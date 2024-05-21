@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button"
 
 import { getUserInfoFromStorage } from "@/api/auth";
 
-export default function MonoDataTable({ data, link, handleDelete }: any) {
+export default function MonoDataTable({ data, link, }: any) {
   const userRole = getUserInfoFromStorage()?.role;
   
   

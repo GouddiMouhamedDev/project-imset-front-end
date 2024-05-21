@@ -112,7 +112,7 @@ export default function Vehicles() {
           <TableHeader>
             <TableRow>
               {columnHeaders
-                .filter((header) => header !== "id")
+                .filter((header) => header !== "Id")
                 .map((header) => (
                   <TableHead key={header}>{header}</TableHead>
                 ))}
@@ -129,7 +129,7 @@ export default function Vehicles() {
               vehiclesData.map((row: any, rowIndex: number) => (
                 <TableRow key={rowIndex}>
                   {columnHeaders
-                    .filter((header) => header !== "id")
+                    .filter((header) => header !== "Id")
                     .map((header, columnIndex) => (
                       <TableCell key={columnIndex}>
                         <span>{row[header]}</span>

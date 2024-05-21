@@ -40,6 +40,11 @@ export default function AddChauffeurForm({
     name: z.string({
       required_error: "Nom required.",
     }),
+    cin: z.coerce.number({
+      invalid_type_error: "Le CIN doit être un nombre."
+    }).refine(value => value.toString().length === 8, {
+      message: "Le CIN doit être un nombre à 8 chiffres."
+    })
     // Add more fields as needed
   });
 

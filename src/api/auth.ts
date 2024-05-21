@@ -57,6 +57,7 @@ const saveUserInfoToStorage = (userInfo: User) => {
     email: userInfo.email,
     role: userInfo.role,
     _id: userInfo._id,
+    avatar: userInfo.avatar,
   };
   localStorage.setItem('userInfo', JSON.stringify(formattedUserInfo));
 };

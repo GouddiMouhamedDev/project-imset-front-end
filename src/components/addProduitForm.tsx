@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { createProduit } from "@/api/produits";
 
-export default function AddProduitForm({ onSubmitSuccess }: { onSubmitSuccess: () => void; }) {
+export default function AddProduitForm(
+  { onSubmitSuccess }: { onSubmitSuccess: () => void; }) {
   const [formData, setFormData] = useState<any>({});
   const [msg, setMsg] = useState<string>("");
   const [isHTActive, setIsHTActive] = useState<boolean>(false);

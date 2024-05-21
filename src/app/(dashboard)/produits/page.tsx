@@ -26,7 +26,7 @@ export default function Produits() {
 
   const fetchData = async () => {
     try {
-      const isAuthenticated = auth(["admin", "super-admin", "user"]);
+      const isAuthenticated = auth(["admin", "super-admin"]);
       if (!isAuthenticated) {
         removeStorage();
         router.push("/login");

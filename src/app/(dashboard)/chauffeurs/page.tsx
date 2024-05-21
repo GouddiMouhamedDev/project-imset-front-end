@@ -47,7 +47,7 @@ export default function Chauffeurs() {
 
   const fetchData = async () => {
     try {
-      const isAuthenticated = auth(["admin", "super-admin", "user"]);
+      const isAuthenticated = auth(["admin", "super-admin"]);
       if (!isAuthenticated) {
         removeStorage();
         router.push("/login");
@@ -57,7 +57,9 @@ export default function Chauffeurs() {
         const chauffeurFormatedData: ChauffeurFormatedData[] = getdata.map(
             (item: ChauffeurData) => ({
               Id: item._id,
-              Nom: item.name
+              CIN: item.cin,
+              Nom: item.name,
+            
             })
           );
         setChauffeursData(chauffeurFormatedData);
@@ -103,7 +105,7 @@ export default function Chauffeurs() {
           <TableHeader>
             <TableRow>
               {columnHeaders
-                .filter((header) => header !== "id")
+                .filter((header) => header !== "Id")
                 .map((header) => (
                   <TableHead key={header}>{header}</TableHead>
                 ))}
@@ -117,7 +119,7 @@ export default function Chauffeurs() {
               chauffeursData.map((row:any, rowIndex: number) => (
                 <TableRow key={rowIndex}>
                   {columnHeaders
-                    .filter((header) => header !== "id")
+                    .filter((header) => header !== "Id")
                     .map((header, columnIndex) => (
                       <TableCell key={columnIndex}>
                         <span>{row[header]}</span>

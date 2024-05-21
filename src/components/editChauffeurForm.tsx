@@ -47,6 +47,7 @@ export default function EditChauffeurForm({
     if (chauffeurId) {
       try {
         const fetchedOneChauffeurData = await getOneChauffeurData(chauffeurId);
+        console.log("fetchedOneChauffeurData",fetchedOneChauffeurData);
         setFormData(fetchedOneChauffeurData);
       } catch (error) {
         console.error(
@@ -61,6 +62,14 @@ export default function EditChauffeurForm({
     name: z.string({
       required_error: "Nom requis.",
     }),
+    cin: z.coerce.number({
+      invalid_type_error: "Le CIN doit être un nombre."
+    }).refine(value => value.toString().length === 8, {
+      message: "Le CIN doit être un nombre à 8 chiffres."
+    })
+   
+  
+   
     // Ajoutez d'autres champs au besoin
   });
 
