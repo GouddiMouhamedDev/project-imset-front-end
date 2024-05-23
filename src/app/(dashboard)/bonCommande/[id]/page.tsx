@@ -198,7 +198,7 @@ export default function EditBonCommande({
     setIsLoading(true);
     try {
       // Créer un tableau pour stocker les produits
-       console.log("selectedProducts", JSON.stringify(selectedProducts, null, 2)) ;  
+    
       const produitsData = selectedProducts.map((product) => ({
         produit: product.produit, // Utiliser l'ID du produit
         idProduit: product.idProduit, // Utiliser l'ID du produit
@@ -222,8 +222,7 @@ export default function EditBonCommande({
         prixTotalTTC: prixTotalTTC, // Utiliser le prix total TTC calculé
       };
       // Envoyer les données au backend
-      console.log("id:",id);
-      console.log("bonCommandeData", JSON.stringify(bonCommandeData, null, 2));
+    
       
       await updateBonCommandeData(id, bonCommandeData).then((response) => {
         const msg = (response as { data: { msg: string } }).data.msg;
@@ -316,7 +315,7 @@ export default function EditBonCommande({
   const fetchOneBonCommande = async (id: string) => {
     try {
       const data: BonCommandeData = await getOneBonCommandeData(id);
-      console.log("data", JSON.stringify(data, null, 2));
+     
     // Formater les données de la commande pour remplir le formulaire et le tableau des produits
      const formattedProducts = data.produits.map((produit) => ({
             idProduit: produit.idProduit,
