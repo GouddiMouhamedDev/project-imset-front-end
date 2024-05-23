@@ -2,24 +2,23 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, removeStorage } from "@/api/auth";
-import { getBonCommandesData, deleteBonCommandeData } from "@/api/bonCommandes";
+import { getBonLivraisonsData, deleteBonLivraisonData } from "@/api/bonLivraison";
 import BlueLoading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BonCommandeData, BonCommandeFormatData } from "@/types/bonCommande";
+import { BonLivraisonData } from "@/types/bonLivraison";
 import { getOneClientData } from "@/api/clients";
 import { getOneUserData } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
 
-export default function BonCommandes() {
-  const [bonCommandesData, setBonCommandesData] = useState<any[]>([]);
+export default function BonLivraisons() {
+  const [bonLivraisonsData, setBonLivraisonsData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const columnHeaders = Object.keys(bonCommandesData && bonCommandesData.length > 0 ? bonCommandesData[0] : {});
-  
+  const columnHeaders = Object.keys(bonLivraisonsData && bonLivraisonsData.length > 0 ? bonLivraisonsData[0] : {});
   
   const fetchData = async () => {
     try {
@@ -28,34 +27,34 @@ export default function BonCommandes() {
         removeStorage();
         router.push("/login");
       } else {
-        const data: BonCommandeData[] = await getBonCommandesData();
-        const formattedData = await Promise.all(data.map(async (bonCommande) => {
+        const data: BonLivraisonData[] = await getBonLivraisonsData();
+        const formattedData = await Promise.all(data.map(async (bonLivraison) => {
           // Extraire la partie de la date sans l'heure
-          const datePart = bonCommande.dateCommande.split("T")[0];
+          const datePart = bonLivraison.dateLivraison.split("T")[0];
           
           // Récupérer le nom du vendeur en fonction de son ID
-        
-          const vendeurName = (await getOneUserData(bonCommande.userId))?.name || "";
+          const vendeurName = (await getOneUserData(bonLivraison.userId))?.name || "";
    
           return {
-            Id: bonCommande._id,
-            IdBon: bonCommande.idBonCommande,
+            Id: bonLivraison._id,
+            IdBon: bonLivraison.idBonLivraison,
             Date: datePart,
-            NomClient: (await getOneClientData(bonCommande.client))?.data?.nom || "",
-            destination: bonCommande.destination,
-            PrixTotalHT: bonCommande.prixTotalHT,
-            TVA: bonCommande.montantTVA,
-            prixTotalTTC: bonCommande.prixTotalTTC,
-            Vendeur: vendeurName
+            NomClient: (await getOneClientData(bonLivraison.client))?.data?.nom || "",
+            destination: bonLivraison.destination,
+            PrixTotalHT: bonLivraison.prixTotalHT,
+            TVA: bonLivraison.montantTVA,
+            prixTotalTTC: bonLivraison.prixTotalTTC,
+            Vendeur: vendeurName,
+            Véhicule: bonLivraison.vehicle, // Nouveau champ pour le véhicule de livraison
+            Chauffeur: bonLivraison.chauffeur // Nouveau champ pour le nom du chauffeur
           };
         }));
         
-        
-        setBonCommandesData(formattedData);
+        setBonLivraisonsData(formattedData);
       }
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de la récupération des données des bons de commande :",
+        "Une erreur s'est produite lors de la récupération des données des bons de livraison :",
         error
       );
     } finally {
@@ -65,16 +64,15 @@ export default function BonCommandes() {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteBonCommandeData(id);
+      await deleteBonLivraisonData(id);
       await fetchData();
     } catch (error) {
-      console.error("Une erreur s'est produite lors de la suppression du bon de commande :", error);
+      console.error("Une erreur s'est produite lors de la suppression du bon de livraison :", error);
     }
   };
 
   useEffect(() => {
     fetchData();
-   
   }, []);
 
   if (isLoading) {
@@ -84,7 +82,7 @@ export default function BonCommandes() {
   return (
     <div className="min-h-screen p-4">
       <div className="border-b-2 border-slate-400 pb-4 mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Liste des bons de commande</h1>
+        <h1 className="text-2xl font-semibold">Liste des bons de livraison</h1>
       </div>
       <SearchBar />
       <div className="rounded-md border mt-2">
@@ -97,16 +95,16 @@ export default function BonCommandes() {
                 <TableHead key={header}>
                   {header}</TableHead>
               ))}
-              <TableHead>
-              <Link className="flex justify-center items-center " href={"/bonCommande/add"}>
+              <TableHead >
+              <Link className="flex justify-center items-center " href={"/bonLivraison/add"}>
                   <IoIosAddCircle className=" w-4 h-4 cursor-pointer hover:scale-[1.2] " />
                 </Link>
                 </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {bonCommandesData && bonCommandesData.length > 0 ? (
-              bonCommandesData.map((row:any, rowIndex:number) => (
+            {bonLivraisonsData && bonLivraisonsData.length > 0 ? (
+              bonLivraisonsData.map((row:any, rowIndex:number) => (
                 <TableRow key={rowIndex}>
 
                   {columnHeaders
@@ -118,8 +116,8 @@ export default function BonCommandes() {
                   ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
-                      {/** link to edit bon Commande page */}
-                      <Link href={`/bonCommande/${row.Id}`}>
+                      {/** link to edit bon Livraison page */}
+                      <Link href={`/bonLivraison/${row.Id}`}>
                       <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
                       <MdEdit />
                       </div>

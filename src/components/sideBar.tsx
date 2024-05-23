@@ -197,6 +197,29 @@ export default function Sidebar() {
                   </Link>
             </AccordionContent>
           </AccordionItem>
+          <AccordionItem value="item-10">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+                <FaFileAlt />
+                <span>Bon Livraison(D)</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/bonLivraison "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
+                <FaListOl /> &nbsp;List
+              </Link>
+              <Link
+                    href="/bonLivraison/add"
+                    className="flex items-center p-2 space-x-3 rounded-md"
+                  >
+                    <IoMdAddCircleOutline />
+                    &nbsp;Ajouter
+                  </Link>
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       </div>
 

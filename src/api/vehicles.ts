@@ -19,7 +19,7 @@ export const getVehiclesData = async () => {
         'x-auth-token': `${token}`,
       },
     });;
-    return response; 
+    return response.data; 
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération des données :", error);
   }

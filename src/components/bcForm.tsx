@@ -96,6 +96,8 @@ export function BonCommandeForm() {
   const [responseStatus, setResponseStatus] = useState(-1);
   const [isHTActive, setIsHTActive] = useState(false);
   const [msg, setMsg] = useState<string>("");
+
+  
   const calculateTotals = (products: ProduitDataBon[]) => {
     let prixTotalHT = 0;
     let prixTotalTTC = 0;
@@ -428,7 +430,7 @@ export function BonCommandeForm() {
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "w-[250px] pl-3 text-left font-normal",
                             !field.value && "text-muted-foreground"
                           )}
                         >

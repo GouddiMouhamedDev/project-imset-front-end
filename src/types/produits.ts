@@ -1,5 +1,5 @@
 export interface ProduitData {
-    
+   _id: string;
   quantite: number;
  produit: string;
  idProduit: number;
