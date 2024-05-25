@@ -53,7 +53,7 @@ export default function Chauffeurs() {
         router.push("/login");
       } else {
         const response = await getChauffeursData();
-        const getdata:ChauffeurData[] = response!.data;
+        const getdata:ChauffeurData[] = response;
         const chauffeurFormatedData: ChauffeurFormatedData[] = getdata.map(
             (item: ChauffeurData) => ({
               Id: item._id,

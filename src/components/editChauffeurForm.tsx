@@ -47,7 +47,6 @@ export default function EditChauffeurForm({
     if (chauffeurId) {
       try {
         const fetchedOneChauffeurData = await getOneChauffeurData(chauffeurId);
-        console.log("fetchedOneChauffeurData",fetchedOneChauffeurData);
         setFormData(fetchedOneChauffeurData);
       } catch (error) {
         console.error(

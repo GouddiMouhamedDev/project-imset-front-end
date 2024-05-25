@@ -56,7 +56,9 @@ export default function Vehicles() {
         router.push("/login");
       } else {
         const response = await getVehiclesData();
-        const getdata: VehicleData[] = response!.data;
+        
+        const getdata: VehicleData[] = response;
+        
         const VehicleFormatedData: VehicleFormatedData[] = getdata.map(
           (item: VehicleData) => ({
             Id: item._id,
