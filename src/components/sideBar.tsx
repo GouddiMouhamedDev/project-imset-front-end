@@ -64,7 +64,7 @@ export default function Sidebar() {
               <div className="flex items-center space-x-2">
                 <FiUsers />
                 <div/>
-                <span>Utilisateurs  </span>
+                <span>Utilisateurs(T)</span>
               </div>
             </AccordionTrigger>
 
@@ -178,7 +178,7 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
-                <span>Bon Commande(D)</span>
+                <span>Bon Commande(T)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -201,7 +201,7 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
-                <span>Bon Livraison(D)</span>
+                <span>Bon Livraison(T)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -213,6 +213,29 @@ export default function Sidebar() {
               </Link>
               <Link
                     href="/bonLivraison/add"
+                    className="flex items-center p-2 space-x-3 rounded-md"
+                  >
+                    <IoMdAddCircleOutline />
+                    &nbsp;Ajouter
+                  </Link>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-11">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+                <FaFileAlt />
+                <span>Bon Reception(D)</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/bonReception "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
+                <FaListOl /> &nbsp;List
+              </Link>
+              <Link
+                    href="/bonReception/add"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <IoMdAddCircleOutline />
