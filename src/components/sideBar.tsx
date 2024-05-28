@@ -224,7 +224,7 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
-                <span>Bon Reception(D)</span>
+                <span>Bon Reception(T)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>

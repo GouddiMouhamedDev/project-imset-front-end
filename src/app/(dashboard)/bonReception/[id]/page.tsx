@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -28,8 +29,6 @@ import {
 } from "@/components/ui/popover";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ApiFournisseurData, FournisseurData} from "@/types/fournisseurs";
-import { Calendar } from "./ui/calendar";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { ProduitData, ProduitDataBon } from "@/types/produits";
 import { getProduitsData } from "@/api/produits";
@@ -43,57 +42,68 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format } from "date-fns";
-import { Input } from "./ui/input";
+import { getOneBonReceptionData,updateBonReceptionData } from "@/api/bonReception";
+import { format, getDate } from "date-fns";
+
 import { MdDeleteForever } from "react-icons/md";
-import { Card } from "./ui/card";
+
 import { toast } from "sonner";
-import { Icons } from "./icons";
+
 import { ChauffeurData, ChauffeurFormatedData } from "@/types/Chauffeur";
 import { VehicleData, VehicleFormatedData } from "@/types/vehicles";
 import { getChauffeursData } from "@/api/chauffeurs";
 import { getVehiclesData } from "@/api/vehicles";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
+import { Icons } from "@/components/icons";
+import { ApiFournisseurData, FournisseurData } from "@/types/fournisseurs";
 import { getFournisseursData } from "@/api/fournisseurs";
-import { createBonReception } from "@/api/bonReception";
+import { BonReceptionData } from "@/types/bonReception";
 
 
 
 //********************************************************************************************************************************/
-export function BonReceptionForm() {
+export default function EditBonReceptionForm({
+        params: { id },
+      }: {
+        params: { id: string };
+     
+    }) {
 
 
 
-  const FormSchema = z.object({
-    fournisseur: z.string({
-      required_error: "Veuillez sélectionner un fournisseur.",
-    }),
-    numeroPiece: z.string({
-      required_error: "Veuillez saisir le numéro de la pièce.",
-    }),
-    date: z.coerce.date({
-      required_error: "Veuillez sélectionner une date.",
-    }),
-    produits: z.array(
-      z.object({
-        nom: z.string(),
-        prixUnitaireHT: z.number(),
-        prixUnitaireTTC: z.number(),
-        tauxTVA: z.number(),
-        idProduit: z.number(),
-        quantite: z.number().default(1),
-        montantTTC: z.number(),
-      })
-    ),
-    chauffeur: z.string({
-        required_error: "Veuillez sélectionner un chauffeurs.",
-      }),
-      vehicule: z.string({
-        required_error: "Veuillez sélectionner un vehicules.",
-      }),
-
-
-
-  });
+const FormSchema = z.object({
+            fournisseur: z.string({
+              required_error: "Veuillez sélectionner un fournisseur.",
+            }),
+            numeroPiece: z.string({
+              required_error: "Veuillez saisir le numéro de la pièce.",
+            }),
+            date: z.coerce.date({
+              required_error: "Veuillez sélectionner une date.",
+            }),
+            produits: z.array(
+              z.object({
+                nom: z.string(),
+                prixUnitaireHT: z.number(),
+                prixUnitaireTTC: z.number(),
+                tauxTVA: z.number(),
+                idProduit: z.number(),
+                quantite: z.number().default(1),
+                montantTTC: z.number(),
+              })
+            ),
+            chauffeur: z.string({
+                required_error: "Veuillez sélectionner un chauffeurs.",
+              }),
+              vehicule: z.string({
+                required_error: "Veuillez sélectionner un vehicules.",
+              }),
+        
+        
+        
+          });
 
 
   const [vehiclesData, setVehiclesData] = useState<VehicleFormatedData[]>([]);
@@ -103,13 +113,12 @@ export function BonReceptionForm() {
   const [selectedProducts, setSelectedProducts] = useState<ProduitDataBon[]>([]);
   const [isLoading, setIsLoading] =useState<boolean>(false);
   const router = useRouter();
+  //const [numeroPiece, setNumeroPiece] = useState("");
   const [prixTotalHT, setPrixTotalHT] = useState(0);
   const [prixTotalTTC, setPrixTotalTTC] = useState(0);
   const [montantTVA, setMontantTVA] = useState(0);
-  const [responseStatus, setResponseStatus] = useState(-1);
   const [isHTActive, setIsHTActive] = useState(false);
-  const [msg, setMsg] = useState<string>("");
-
+  const [vendeurId, setVendeurId] = useState("");
 
 
   const calculateTotals = (products: ProduitDataBon[]) => {
@@ -201,8 +210,6 @@ export function BonReceptionForm() {
     setIsHTActive(!isHTActive);
   };
 
-  const [vendeurId, setVendeurId] = useState("");
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: { produits: [] },
@@ -225,7 +232,7 @@ export function BonReceptionForm() {
         montantTTC: product.montantTTC, // Utiliser le montant TTC du produit
       }));
 
-      // Créer un objet contenant les données avec le tableau de produits
+      // Créer un objet contenant les données  avec le tableau de produits
       const bonReceptionData = {
         dateReception: format(data.date, "yyyy-MM-dd"), // Utiliser la date sélectionnée
         numeroPiece: data.numeroPiece, // Utiliser le numero pièces à joindre
@@ -239,12 +246,10 @@ export function BonReceptionForm() {
         prixTotalTTC: prixTotalTTC, // Utiliser le prix total TTC calculé
       };
       // Envoyer les données au backend
-
-
-      await createBonReception(bonReceptionData).then((response) => {
+      await updateBonReceptionData(id,bonReceptionData).then((response) => {
         const msg = (response as { data: { msg: string } }).data.msg;
 
-        if ((response as { status: number }).status === 201) {
+        if ((response as { status: number }).status === 200) {
           toast.success(msg, {
             position: "top-right",
             className: "text-white bg-green-500",
@@ -260,7 +265,7 @@ export function BonReceptionForm() {
     } catch (error) {
       // Gérer les erreurs en cas d'échec de l'envoi
       console.error(
-        "Une erreur s'est produite lors de la création du bon de commande :",
+        "Une erreur s'est produite lors de la création du bon de Reception :",
         error
       );
     }
@@ -364,11 +369,56 @@ export function BonReceptionForm() {
     }
 };
 
+const fetchOneBonReception = async (id: string) => {
+    try {
+        const data: BonReceptionData= await getOneBonReceptionData(id);
+        
+        // Formater les données de la Reception pour remplir le formulaire et le tableau des produits
+        const formattedProducts = data.produits.map((produit) => ({
+            idProduit: produit.idProduit,
+            nom: produit.nomProduit,
+            prixUnitaireHT: produit.prixUnitaireHT,
+            prixUnitaireTTC: produit.prixUnitaireTTC,
+            tauxTVA: produit.tauxTVA,
+            quantite: produit.quantite,
+            montantTTC: produit.montantTTC,
+            produit: produit._id 
+        }));
+        
+        // Mettre à jour les états
+        setSelectedProducts(formattedProducts);
+        //setNumeroPiece(data.numeroPiece);
+        setPrixTotalHT(data.prixTotalHT);
+        setPrixTotalTTC(data.prixTotalTTC);
+        setMontantTVA(data.montantTVA);
+        
+        // Mettre à jour les valeurs du formulaire
+        form.setValue("fournisseur" , data.fournisseur);
+        form.setValue("date", new Date(data.dateReception));
+        form.setValue("produits", formattedProducts);
+        form.setValue("numeroPiece", data.numeroPiece);
+        form.setValue("chauffeur", data.chauffeur);
+        form.setValue("vehicule", data.vehicle);
+        
+    } catch (error) {
+        console.error(
+            "Une erreur s'est produite lors de la récupération des données d'un bon de Reception :",
+            error
+        );
+    }
+};
 
+  
 const fetchDataAfterAuth = async () => {
-    const isAuthenticated = auth(["admin", "super-admin", "user"]);
+    const isAuthenticated = auth(["admin", "super-admin"]);
     if (isAuthenticated) {
-      await Promise.all([fetchProductsData(), fetchFournisseurData(), fetchChauffeurData(), fetchVehicleData()]);
+      await Promise.all([
+        fetchProductsData(), 
+        fetchFournisseurData(), 
+        fetchChauffeurData(),
+         fetchVehicleData(),
+         fetchOneBonReception(id),
+        ]);
       const vendeurId = getUserInfoFromStorage()?._id;
       setVendeurId(vendeurId!);
     } else {
@@ -376,6 +426,9 @@ const fetchDataAfterAuth = async () => {
       router.push("/login");
     }
   };
+
+
+
 
   useEffect(() => {
   
@@ -572,8 +625,8 @@ const fetchDataAfterAuth = async () => {
 />
           </div>
           <div className="space-y-4">
-                 {/**numeroPiece  */}
-                 <FormField
+               {/**numeroPiece  */}
+               <FormField
                 control={form.control}
                 name="numeroPiece"
                 render={({ field }) => (
@@ -583,6 +636,7 @@ const fetchDataAfterAuth = async () => {
                       {...field}
                       className="form-input"
                       placeholder="Numero Piece"
+                      //defaultValue={numeroPiece}
                     />
                   </FormItem>
                 )}

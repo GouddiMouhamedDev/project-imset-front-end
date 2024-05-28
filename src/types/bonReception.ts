@@ -13,6 +13,7 @@ export interface BonReceptionData {
   userId: string;
   vehicle: string; 
   chauffeur: string; 
+  numeroPiece: string;
 }
 
 // Interface pour les données formatées d'un bon de réception

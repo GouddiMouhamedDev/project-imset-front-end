@@ -3,8 +3,7 @@ import { IMediaPlayerProps } from "./mediaPlayer.interface";
 import { TbPlayerPlayFilled, TbPlayerPauseFilled, TbPlayerSkipBack, TbPlayerSkipForward } from 'react-icons/tb';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Button } from "../ui/button";
-import { Input } from "@/components/ui/input"
-import { Slider } from "@radix-ui/react-slider";
+
 
 export default function MediaPlayer(props: IMediaPlayerProps) {
   const { channel, onChangeChannel } = props;

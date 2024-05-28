@@ -16,7 +16,7 @@ import Link from "next/link";
 import { getOneFournisseurData } from "@/api/fournisseurs";
 
 export default function BonReceptions() { // Changement du nom de la fonction
-  const [bonReceptionsData, setBonReceptionsData] = useState<any[]>([]); // Mise à jour de la variable
+  const [bonReceptionsData, setBonReceptionsData] = useState<any[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const columnHeaders = Object.keys(bonReceptionsData && bonReceptionsData.length > 0 ? bonReceptionsData[0] : {}); // Mise à jour de la variable
@@ -28,7 +28,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
         removeStorage();
         router.push("/login");
       } else {
-        const data: BonReceptionData[] = await getBonReceptionsData(); // Mise à jour de la fonction
+        const data: BonReceptionData[] = await getBonReceptionsData(); 
         const formattedData = await Promise.all(data.map(async (bonReception) => {
           // Extraire la partie de la date sans l'heure
           const datePart = bonReception.dateReception.split("T")[0];
