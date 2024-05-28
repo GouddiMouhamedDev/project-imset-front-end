@@ -7,7 +7,7 @@ import { BonLivraisonForm } from "@/components/blForm";
 
 
 
-export default function AddBc(){
+export default function AddBl(){
 
     return(
 

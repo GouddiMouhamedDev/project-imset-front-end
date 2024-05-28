@@ -118,7 +118,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                       {/** link to edit bon Livraison page */}
-                      <Link href={`/bonReception/${row.Id}`}>{/* Mise à jour du lien */}
+                      <Link href={`/bonReception/${row.id}`}>{/* Mise à jour du lien */}
                       <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
                       <MdEdit />
                       </div>
@@ -139,7 +139,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Annuler</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(row.Id )}>
+                            <AlertDialogAction onClick={() => handleDelete(row.id )}>
                               Continuer
                             </AlertDialogAction>
                           </AlertDialogFooter>

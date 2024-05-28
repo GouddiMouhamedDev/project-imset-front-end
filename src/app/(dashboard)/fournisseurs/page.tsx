@@ -8,7 +8,7 @@ import Blueloading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
 import { useRouter } from "next/navigation";
 import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
-import { FournisseurData, FournisseurFormatData } from "@/types/fournisseurs";
+import { ApiFournisseurData, FournisseurData} from "@/types/fournisseurs";
 import { MdDeleteForever } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -16,7 +16,7 @@ import EditFournisseurForm from "@/components/editFournisseurForm";
 import AddFournisseurForm from "@/components/addFournisseurForm";
 
 export default function Fournisseurs() {
-  const [fournisseursData, setFournisseursData] = useState<FournisseurFormatData[]>([]);
+  const [fournisseursData, setFournisseursData] = useState<FournisseurData[]>([]);
   const userRole = getUserInfoFromStorage()?.role;
   const isAdmin = ["super-admin", "admin"].includes(userRole!);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,9 +30,10 @@ export default function Fournisseurs() {
         removeStorage();
         router.push("/login");
       } else {
-        const data: FournisseurData[] = await getFournisseursData();
-        const formattedData: FournisseurFormatData[] = data.map((fournisseur) => ({
+        const data: ApiFournisseurData[] = await getFournisseursData();
+        const formattedData: FournisseurData[] = data.map((fournisseur) => ({
           Id: fournisseur._id,
+          idFournisseur: fournisseur.idFournisseur,
           Nom: fournisseur.nom,
           Telephone: fournisseur.telephone,
           IdentifiantFiscale: fournisseur.identifiantFiscaleFournisseur,

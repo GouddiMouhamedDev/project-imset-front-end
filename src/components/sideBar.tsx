@@ -18,7 +18,7 @@ import { FaBoxes } from "react-icons/fa";
 import { getUserInfoFromStorage} from "@/api/auth";
 import { FaFileAlt } from "react-icons/fa";
 import { Card } from "./ui/card";
-  
+import { TfiUser } from "react-icons/tfi";
 
 
 
@@ -111,7 +111,7 @@ export default function Sidebar() {
           <AccordionItem value="item-5">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <MdCommute />
+              <TfiUser />
                 <span>Clients(T)</span>
               </div>
             </AccordionTrigger>
