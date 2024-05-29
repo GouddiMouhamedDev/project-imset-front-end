@@ -11,7 +11,7 @@ import { FaListOl } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { LuSettings } from "react-icons/lu";
-import { MdCommute, MdLockReset } from "react-icons/md";
+import { MdCommute } from "react-icons/md";
 import { GiSteeringWheel } from "react-icons/gi";
 import { TbTruckLoading } from "react-icons/tb";
 import { FaBoxes } from "react-icons/fa";
@@ -19,7 +19,7 @@ import { getUserInfoFromStorage} from "@/api/auth";
 import { FaFileAlt } from "react-icons/fa";
 import { Card } from "./ui/card";
 import { TfiUser } from "react-icons/tfi";
-
+import { BsBuildingFillGear } from "react-icons/bs";
 
 
 
@@ -27,13 +27,12 @@ export default function Sidebar() {
   
 
   const userRole = getUserInfoFromStorage()?.role;
-  const isAdmin = ["super-admin", "admin", "user"].includes(userRole!);
 
   return (
     <Card className="w-1/6 hidden md:flex flex-col p-3 shadow h-screen sticky mt-3 ml-2 ">
       <div className="space-y-3">
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1">
+          <AccordionItem value="item-1" className="pb-4">
             <Link
               href="/dashboard"
               className="flex items-center space-x-2 hover:underline"
@@ -46,52 +45,31 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <LuSettings />
-                <span>Settings(D)</span>
+                <span>Settings(T)</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
+              <>
               <Link
-                href="/reset"
+                href="/societe"
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <MdLockReset />
-                &nbsp;Rst
+                <BsBuildingFillGear />
+                &nbsp;société
               </Link>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger>
-              <div className="flex items-center space-x-2">
-                <FiUsers />
-                <div/>
-                <span>Utilisateurs(T)</span>
-              </div>
-            </AccordionTrigger>
-
-            <AccordionContent>
-              {isAdmin && (
-                <>
-                  <Link
+              <Link
                     href="/users"
                     className="flex items-center p-2 space-x-2 rounded-md"
                   >
-                    <FaListOl />
-                    &nbsp;Liste
+                   <FiUsers />
+                    &nbsp;Utilisateurs
                   </Link>
-
-                  <Link
-                    href="/users/add"
-                    className="flex items-center p-2 space-x-3 rounded-md"
-                  >
-                    <IoMdAddCircleOutline />
-                    &nbsp;Ajouter
-                  </Link>
-                </>
-              )}
+                  </>
             </AccordionContent>
           </AccordionItem>
+        
 
-          <AccordionItem value="item-4">
+          <AccordionItem value="item-3">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <MdCommute />
@@ -108,7 +86,7 @@ export default function Sidebar() {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-5">
+          <AccordionItem value="item-4">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
               <TfiUser />
@@ -125,7 +103,7 @@ export default function Sidebar() {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-6">
+          <AccordionItem value="item-5">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <GiSteeringWheel />
@@ -142,7 +120,7 @@ export default function Sidebar() {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="item-7">
+          <AccordionItem value="item-6">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <TbTruckLoading />
@@ -158,7 +136,7 @@ export default function Sidebar() {
               </Link>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-8">
+          <AccordionItem value="item-7">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaBoxes />
@@ -174,7 +152,7 @@ export default function Sidebar() {
               </Link>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-9">
+          <AccordionItem value="item-8">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
@@ -197,7 +175,7 @@ export default function Sidebar() {
                   </Link>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-10">
+          <AccordionItem value="item-9">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
@@ -220,7 +198,7 @@ export default function Sidebar() {
                   </Link>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-11">
+          <AccordionItem value="item-10">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />

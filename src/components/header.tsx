@@ -109,17 +109,17 @@ export default function Header() {
         src="/img/logo1.png"
         width={250}
         height={100}
-        alt="Logo"
+        alt=""
       />
       {/* Avatar */}
       <div className="">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="border-2 hover:opacity-75 w-16 h-16 mr-3">
+            <Avatar className="border-4 hover:opacity-75 w-16 h-16 mr-3 cursor-pointer">
               <AvatarImage
                 src={user?.avatar || "/img/Avatar-removebg-preview.png"}
               />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>AV</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

@@ -8,26 +8,11 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import EditIcon from "./editIcone";
 import Link from "next/link";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button"
 
-import { getUserInfoFromStorage } from "@/api/auth";
 
 export default function MonoDataTable({ data, link, }: any) {
-  const userRole = getUserInfoFromStorage()?.role;
   
   
   if (typeof data !== "object") {

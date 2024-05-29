@@ -134,8 +134,9 @@ export default function Users() {
                         <span>{row[header]}</span>
                       </TableCell>
                     ))}
-                  {/* Cellule pour le bouton */}
+                  {/* Cellule pour les boutons */}
                   <TableCell className="flex place-content-center">
+                  <div className="flex flex-row space-x-2">
                     <EditUserForm userId={row.id} 
                     onSubmitSuccess={handleEditFormSubmit}/>
                     {userRole === "super-admin" && (
@@ -169,6 +170,7 @@ export default function Users() {
                         </AlertDialogContent>
                       </AlertDialog>
                     )}
+                     </div>
                   </TableCell>
                 </TableRow>
               ))
