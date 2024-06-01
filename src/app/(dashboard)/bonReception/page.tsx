@@ -9,7 +9,6 @@ import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BonReceptionData } from "@/types/bonReception"; // Mise à jour de l'import
-import { getOneClientData } from "@/api/clients";
 import { getOneUserData } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";

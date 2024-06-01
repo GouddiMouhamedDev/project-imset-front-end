@@ -18,6 +18,21 @@
 ::-webkit-scrollbar-track {
   background-color: #cbd5e0; /* Couleur de la barre de défilement */
 }
+@media print {
+  /* Masquer les éléments indésirables lors de l'impression */
+  @page {
+    margin: 10mm;
+  }
+
+
+
+  /* Cache l'URL, les dates, et les numéros de page générés par le navigateur */
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+}
 
  
 @layer base {
@@ -86,4 +101,3 @@
       -moz-appearance: textfield; /* Pour Firefox */
     }
   }
-  

@@ -1,0 +1,7 @@
+.bon {
+  width: 210mm; /* Largeur de la page A4 */
+  height: 280mm; /* Hauteur de la page A4 */
+  box-sizing: border-box; /* Inclut le padding dans les dimensions */
+  overflow: hidden; /* Masque le contenu dépassant la taille de la page */
+  page-break-inside: avoid; /* Évite les sauts de page à l'intérieur du bon */
+}

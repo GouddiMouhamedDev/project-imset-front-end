@@ -32,7 +32,7 @@ export const getOneClientData = async (id:string) => {
         'x-auth-token': `${token}`,
       },
     });
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération des données du client :", error);
   }
@@ -104,21 +104,3 @@ export const createClient = async (clientData: any) => {
 
 
 
-/*
-***********************************
-// Fonction pour supprimer plusieurs clients
-export const clientsBulkDelete = async (clientIds: []) => {
-  const deleteUrl = `${BASE_URL}/bulk-delete-clients/`;
-  try {
-    const response = await axios.delete(deleteUrl, {
-      data: { clientIds },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response;
-  } catch (error) {
-    console.error("Une erreur s'est produite lors de la suppression des clients :", error);
-  }
-};
-*/

@@ -13,7 +13,7 @@ import { getOneClientData } from "@/api/clients";
 import { getOneUserData } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
-
+import { LuFileSearch2 } from "react-icons/lu";
 export default function BonLivraisons() {
   const [bonLivraisonsData, setBonLivraisonsData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +39,7 @@ export default function BonLivraisons() {
             Id: bonLivraison._id,
             IdBon: bonLivraison.idBonLivraison,
             Date: datePart,
-            NomClient: (await getOneClientData(bonLivraison.client))?.data?.nom || "",
+            NomClient: (await getOneClientData(bonLivraison.client))?.nom || "",
             destination: bonLivraison.destination,
             PrixTotalHT: bonLivraison.prixTotalHT,
             TVA: bonLivraison.montantTVA,
@@ -116,6 +116,12 @@ export default function BonLivraisons() {
                   ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
+                      {/* link to view bon Livraison page */}
+                      <Link href={`/bonLivraison/view/${row.Id}`}>
+                      <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
+                      <LuFileSearch2 />
+                      </div>
+                        </Link>
                       {/** link to edit bon Livraison page */}
                       <Link href={`/bonLivraison/${row.Id}`}>
                       <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">

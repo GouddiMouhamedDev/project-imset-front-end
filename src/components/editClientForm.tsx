@@ -50,7 +50,7 @@ export default function EditClientForm({
      
         const fetchedOneClientData = await getOneClientData(clientId);
      
-          setFormData(fetchedOneClientData!.data);
+          setFormData(fetchedOneClientData!);
         
       } catch (error) {
         console.error(

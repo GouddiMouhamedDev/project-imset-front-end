@@ -41,7 +41,7 @@ export default function BonCommandes() {
             Id: bonCommande._id,
             IdBon: bonCommande.idBonCommande,
             Date: datePart,
-            NomClient: (await getOneClientData(bonCommande.client))?.data?.nom || "",
+            NomClient: (await getOneClientData(bonCommande.client))?.nom || "",
             destination: bonCommande.destination,
             PrixTotalHT: bonCommande.prixTotalHT,
             TVA: bonCommande.montantTVA,
