@@ -13,6 +13,7 @@ import { getOneClientData } from "@/api/clients";
 import { getOneUserData } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
+import { LuFileSearch2 } from "react-icons/lu";
 
 export default function BonCommandes() {
   const [bonCommandesData, setBonCommandesData] = useState<any[]>([]);
@@ -118,13 +119,19 @@ export default function BonCommandes() {
                   ))}
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
+                        {/* link to view bon Commandes page */}
+                      <Link href={`/bonCommande/view/${row.Id}`}>
+                      <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
+                      <LuFileSearch2 />
+                      </div>
+                        </Link>
                       {/** link to edit bon Commande page */}
                       <Link href={`/bonCommande/${row.Id}`}>
                       <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
                       <MdEdit />
                       </div>
                         </Link>
-                      
+                      {/** Dialog to delete bon Commandes */}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">

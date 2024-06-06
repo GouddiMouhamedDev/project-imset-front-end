@@ -128,7 +128,7 @@ export default function BonLivraisons() {
                       <MdEdit />
                       </div>
                         </Link>
-                      
+                      {/** Dialog to delete bon Livraison */}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">

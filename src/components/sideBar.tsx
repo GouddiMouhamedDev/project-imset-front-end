@@ -55,7 +55,7 @@ export default function Sidebar() {
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
                 <BsBuildingFillGear />
-                &nbsp;société
+                &nbsp;Société
               </Link>
               <Link
                     href="/users"
@@ -81,7 +81,7 @@ export default function Sidebar() {
                 href="/vehicles"
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
@@ -98,7 +98,7 @@ export default function Sidebar() {
                 href="/clients"
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
@@ -115,7 +115,7 @@ export default function Sidebar() {
                 href="/chauffeurs"
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
@@ -132,7 +132,7 @@ export default function Sidebar() {
                 href="/fournisseurs "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
@@ -148,7 +148,7 @@ export default function Sidebar() {
                 href="/produits "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
@@ -164,7 +164,7 @@ export default function Sidebar() {
                 href="/bonCommande "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
               <Link
                     href="/bonCommande/add"
@@ -187,7 +187,7 @@ export default function Sidebar() {
                 href="/bonLivraison "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
               <Link
                     href="/bonLivraison/add"
@@ -210,7 +210,7 @@ export default function Sidebar() {
                 href="/bonReception "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;List
+                <FaListOl /> &nbsp;Liste
               </Link>
               <Link
                     href="/bonReception/add"

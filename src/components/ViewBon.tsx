@@ -27,8 +27,8 @@ interface BonLivraisonProps {
   totalTVA: number;
   totalTTC: number;
   vendor: string;
-  vehicle: string;
-  chauffeur: string;
+  vehicle?: string;
+  chauffeur?: string;
   societeName: string;
   societeActivity: string;
   societeAdresse: string;
@@ -36,6 +36,7 @@ interface BonLivraisonProps {
   societeTel: string;
   societeRc: string;
   societeMf: string;
+  bonType: string;
 }
 
 export default function ViewBon({
@@ -60,6 +61,7 @@ export default function ViewBon({
   societeTel,
   societeRc,
   societeMf,
+  bonType,
 }: BonLivraisonProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -166,7 +168,7 @@ export default function ViewBon({
               <p>Date: {creationDate}</p>
             </div>
             <div className="pb-1">
-              <p>Bon de livraison N°: {deliveryNoteNumber}</p>
+              <p>{bonType} N°: {deliveryNoteNumber}</p>
             </div>
           </div>
           <table className="w-full border">
@@ -192,8 +194,8 @@ export default function ViewBon({
           <div className="flex justify-between pt-2">
             <div>
               <p>Vendeur: {vendor}</p>
-              <p>Véhicule: {vehicle}</p>
-              <p>Chauffeur: {chauffeur}</p>
+              {vehicle && <p>Véhicule: {vehicle}</p>}
+              {chauffeur && <p>Chauffeur: {chauffeur}</p>}
             </div>
             <div>
               <p>Signature</p>

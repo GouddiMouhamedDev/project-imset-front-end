@@ -3,13 +3,13 @@ import { auth, removeStorage } from '@/api/auth';
 import ViewBon from '@/components/ViewBon';
 import React, { useEffect,  useState } from 'react';
 import { useRouter } from "next/navigation";
-import { BonLivraisonData } from '@/types/bonLivraison';
-import { getOneBonLivraisonData } from '@/api/bonLivraison';
+import { BonCommandeData } from '@/types/bonCommande';
 import { format } from "date-fns";
 import { getOneUserData } from '@/api/users';
 import { getOneClientData } from '@/api/clients';
 import BlueLoading from "@/components/loading";
 import { getSocieteData } from '@/api/societe';
+import { getOneBonCommandeData } from '@/api/bonCommandes';
 export default function Home({
   params: { id },
 }: {
@@ -20,9 +20,9 @@ export default function Home({
   const [viewData, setViewData] = useState<any>();
 
 
-  const fetchOneBonLivraison = async (id: string) => {
+  const fetchOneBonCommande = async (id: string) => {
     try {
-      const data: BonLivraisonData = await getOneBonLivraisonData(id);
+      const data: BonCommandeData = await getOneBonCommandeData(id);
       const userData = await getOneUserData(data.userId);
       const clientData = await getOneClientData(data.client);
       const societeData = await getSocieteData();
@@ -40,15 +40,13 @@ export default function Home({
         clientPhone: clientData.telephone,
         clientMat: clientData.identifiantFiscaleClient,
         clientAddress: data.destination,
-        deliveryNoteNumber: data.idBonLivraison,
-        creationDate: format(data.dateLivraison, "dd/MM/yyyy"),
+        deliveryNoteNumber: data.idBonCommande,
+        creationDate: format(data.dateCommande, "dd/MM/yyyy"),
         products: formattedProducts,
         totalHT: data.prixTotalHT,
         totalTVA:data.montantTVA,
         totalTTC: data.prixTotalTTC,
         vendor: userData.name,
-        vehicle: data.vehicle,
-        chauffeur: data.chauffeur,
         societeName: societeData.name,
         societeActivity: societeData.activité,
         societeAdresse: societeData.address,
@@ -56,7 +54,7 @@ export default function Home({
         societeTel  :societeData.Tél,
         societeRc:societeData.RC,
         societeMf:societeData.MF,
-        bonType:"Bon de livraison"
+        bonType:"Bon de Commande"
       };
       
       setViewData(dataView);
@@ -71,7 +69,7 @@ export default function Home({
     const isAuthenticated = auth(["admin", "super-admin", "user"]);
     if (isAuthenticated) {
       await Promise.all([
-         fetchOneBonLivraison(id),
+         fetchOneBonCommande(id),
         ]);
     } else {
       removeStorage();
