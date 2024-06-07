@@ -18,16 +18,31 @@ import { removeStorage } from "@/api/auth";
 import { CgProfile } from "react-icons/cg";
 import { useUser } from "@/contexts/UserContext";
 import { getUserInfoFromStorage } from "@/api/auth";
+import { useRouter } from "next/navigation";
+import { usePathname } from 'next/navigation'
+import { RxDragHandleHorizontal } from "react-icons/rx";
+import { Button } from "./ui/button";
 
 export default function Header() {
   const { user, setUser } = useUser();
   const [selectedChannelIndex, setSelectedChannelIndex] = useState<number>(0);
   const userRole = user?.role;
   const isAdmin = ["super-admin", "admin", "user"].includes(userRole!);
-
+  const router = useRouter();
+  const pathname = usePathname();
   const handleLogout = () => {
     removeStorage();
     setUser(null);
+  };
+
+
+
+  const handleClick = () => {
+    if (pathname==="/menu") {
+      router.back();
+    } else {
+      router.push("/menu");
+    }
   };
 
   useEffect(() => {
@@ -96,8 +111,14 @@ export default function Header() {
 
   return (
     <Card className="flex items-center justify-around">
+        {/* menu */}
+        <div className="hidden max-md:block">
+  <Button variant="outline" size="icon" onClick={handleClick} >
+  <RxDragHandleHorizontal />
+</Button>
+</div>
       {/* Media player */}
-      <div className="flex items-center justify-between w-20 pl-2 transform scale-50">
+      <div className="hidden md:flex items-center justify-between w-20 pl-2 transform scale-50">
         <MediaPlayer
           channel={data[selectedChannelIndex]}
           onChangeChannel={handleChangeChannel}

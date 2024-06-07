@@ -3,7 +3,7 @@ import { getAccessTokenFromStorage} from './auth';
 
 
 
-const BASE_URL="http://localhost:4000/api"
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const token=getAccessTokenFromStorage();
 
 

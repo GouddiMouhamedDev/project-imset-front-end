@@ -11,8 +11,7 @@ export interface LoginResponse {
 }
 
 // URL de base de l'API
-const BASE_URL = "http://localhost:4000/api";
-
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Authentification
 export const auth = (allowedRoles: (string | undefined)[]) => {

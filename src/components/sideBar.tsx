@@ -29,7 +29,7 @@ export default function Sidebar() {
   const userRole = getUserInfoFromStorage()?.role;
 
   return (
-    <Card className="w-1/6 hidden md:flex flex-col p-3 shadow h-screen sticky mt-3 ml-2 ">
+   
       <div className="space-y-3">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1" className="pb-4">
@@ -38,25 +38,24 @@ export default function Sidebar() {
               className="flex items-center space-x-2 hover:underline"
             >
               <AiOutlineDashboard />
-              <span>Dash(D)</span>
+              <span>Dash</span>
             </Link>
           </AccordionItem>
           <AccordionItem value="item-2">  
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <LuSettings />
-                <span>Settings(T)</span>
+                <span>Administration</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <>
-              <Link
-                href="/societe"
-                className="flex items-center p-2 space-x-3 rounded-md"
-              >
-                <BsBuildingFillGear />
-                &nbsp;Société
-              </Link>
+              {userRole && userRole.includes('super-admin') && (
+        <Link href="/societe" className="flex items-center p-2 space-x-3 rounded-md">
+          <BsBuildingFillGear />
+          &nbsp;Société
+        </Link>
+      )}
               <Link
                     href="/users"
                     className="flex items-center p-2 space-x-2 rounded-md"
@@ -67,96 +66,11 @@ export default function Sidebar() {
                   </>
             </AccordionContent>
           </AccordionItem>
-        
-
-          <AccordionItem value="item-3">
-            <AccordionTrigger>
-              <div className="flex items-center space-x-2">
-                <MdCommute />
-                <span>Vehicules(T)</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/vehicles"
-                className="flex items-center p-2 space-x-3 rounded-md"
-              >
-                <FaListOl /> &nbsp;Liste
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-4">
-            <AccordionTrigger>
-              <div className="flex items-center space-x-2">
-              <TfiUser />
-                <span>Clients(T)</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/clients"
-                className="flex items-center p-2 space-x-3 rounded-md"
-              >
-                <FaListOl /> &nbsp;Liste
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-5">
-            <AccordionTrigger>
-              <div className="flex items-center space-x-2">
-                <GiSteeringWheel />
-                <span>Chauffeurs(T)</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/chauffeurs"
-                className="flex items-center p-2 space-x-3 rounded-md"
-              >
-                <FaListOl /> &nbsp;Liste
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-6">
-            <AccordionTrigger>
-              <div className="flex items-center space-x-2">
-                <TbTruckLoading />
-                <span>Fournisseurs(T)</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/fournisseurs "
-                className="flex items-center p-2 space-x-3 rounded-md"
-              >
-                <FaListOl /> &nbsp;Liste
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-7">
-            <AccordionTrigger>
-              <div className="flex items-center space-x-2">
-                <FaBoxes />
-                <span>Produits(T)</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/produits "
-                className="flex items-center p-2 space-x-3 rounded-md"
-              >
-                <FaListOl /> &nbsp;Liste
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
           <AccordionItem value="item-8">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
-                <span>Bon Commande(T)</span>
+                <span>Bon Commande</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -179,7 +93,7 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
-                <span>Bon Livraison(T)</span>
+                <span>Bon Livraison</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -202,7 +116,7 @@ export default function Sidebar() {
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
                 <FaFileAlt />
-                <span>Bon Reception(T)</span>
+                <span>Bon Reception</span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -221,9 +135,76 @@ export default function Sidebar() {
                   </Link>
             </AccordionContent>
           </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+              <TfiUser />
+                <span>Clients</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/clients"
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
+                <FaListOl /> &nbsp;Liste
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-6">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+                <TbTruckLoading />
+                <span>Fournisseurs</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/fournisseurs "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
+                <FaListOl /> &nbsp;Liste
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-7">
+            <AccordionTrigger>
+              <div className="flex items-center space-x-2">
+                <FaBoxes />
+                <span>Produits</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/produits "
+                className="flex items-center p-2 space-x-3 rounded-md"
+              >
+                <FaListOl /> &nbsp;Liste
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+            <AccordionItem value="item-5" className="py-4">
+            <Link
+              href="/chauffeurs"
+              className="flex items-center space-x-2 hover:underline"
+            >
+            <GiSteeringWheel />
+                <span>Chauffeurs</span>
+            </Link>
+          </AccordionItem>
+          <AccordionItem value="item-3" className="py-4">
+            <Link
+              href="/vehicles"
+              className="flex items-center space-x-2 hover:underline"
+            >
+            <MdCommute />
+                <span>Vehicules(T)</span>
+            </Link>
+          </AccordionItem>
+      
         </Accordion>
       </div>
 
-    </Card>
+    
   );
 }
