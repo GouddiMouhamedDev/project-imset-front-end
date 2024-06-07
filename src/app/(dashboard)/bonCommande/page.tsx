@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BonCommandeData, BonCommandeFormatData } from "@/types/bonCommande";
 import { getOneClientData } from "@/api/clients";
-import { getOneUserData } from "@/api/users";
+import { getOneUserName } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
 import { LuFileSearch2 } from "react-icons/lu";
@@ -24,7 +24,7 @@ export default function BonCommandes() {
   
   const fetchData = async () => {
     try {
-      const isAuthenticated = auth(["admin", "super-admin", "user"]);
+      const isAuthenticated = auth(["admin","super-admin","user"]);
       if (!isAuthenticated) {
         removeStorage();
         router.push("/login");
@@ -36,7 +36,7 @@ export default function BonCommandes() {
           
           // Récupérer le nom du vendeur en fonction de son ID
         
-          const vendeurName = (await getOneUserData(bonCommande.userId))?.name || "";
+          const vendeurName = await getOneUserName(bonCommande.userId);
    
           return {
             Id: bonCommande._id,

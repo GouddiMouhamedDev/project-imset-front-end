@@ -66,7 +66,21 @@ export const getOneUserData = async (id:any) => {
 
 
 
+export const getOneUserName = async (id:any) => {
+  const getUserUrl = `${BASE_URL}/users/name/${id}`;
+  try {
+    const response = await axios.get(getUserUrl,{
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': `${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la récupération des données :", error);
+  }
 
+};
 
 
 

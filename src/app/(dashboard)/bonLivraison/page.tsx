@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BonLivraisonData } from "@/types/bonLivraison";
 import { getOneClientData } from "@/api/clients";
-import { getOneUserData } from "@/api/users";
+import {  getOneUserName } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
 import { LuFileSearch2 } from "react-icons/lu";
@@ -33,7 +33,7 @@ export default function BonLivraisons() {
           const datePart = bonLivraison.dateLivraison.split("T")[0];
           
           // Récupérer le nom du vendeur en fonction de son ID
-          const vendeurName = (await getOneUserData(bonLivraison.userId))?.name || "";
+          const vendeurName = await getOneUserName(bonLivraison.userId);
    
           return {
             Id: bonLivraison._id,

@@ -9,7 +9,7 @@ import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BonReceptionData } from "@/types/bonReception"; // Mise à jour de l'import
-import { getOneUserData } from "@/api/users";
+import { getOneUserName } from "@/api/users";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
 import { getOneFournisseurData } from "@/api/fournisseurs";
@@ -33,7 +33,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
           const datePart = bonReception.dateReception.split("T")[0];
           
           // Récupérer le nom du vendeur en fonction de son ID
-          const opérateurName = (await getOneUserData(bonReception.userId))?.name || "";
+          const opérateurName = await getOneUserName(bonReception.userId);
    
           return {  
             id: bonReception._id,
