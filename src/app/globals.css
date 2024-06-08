@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 
+
 /* Largeur de la barre de défilement */
 ::-webkit-scrollbar {
   width: 12px;
@@ -60,6 +61,7 @@
   }
 
   .dark {
+    
     --background: 229 41% 4%;
     --foreground: 229 23% 99%;
     --muted: 229 12% 14%;
