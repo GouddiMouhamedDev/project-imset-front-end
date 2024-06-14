@@ -8,21 +8,18 @@ import {
 import Link from "next/link";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaListOl } from "react-icons/fa";
-import { FiUsers } from "react-icons/fi";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { LuSettings } from "react-icons/lu";
 import { MdCommute } from "react-icons/md";
 import { GiSteeringWheel } from "react-icons/gi";
-import { TbTruckLoading } from "react-icons/tb";
+import { FaRegUser } from "react-icons/fa";
 import { FaBoxes } from "react-icons/fa";
 import { getUserInfoFromStorage} from "@/api/auth";
 import { FaFileAlt } from "react-icons/fa";
-import { Card } from "./ui/card";
 import { TfiUser } from "react-icons/tfi";
 import { BsBuildingFillGear } from "react-icons/bs";
-
-
-
+import { IoSettings } from "react-icons/io5";
+import { GiFactory } from "react-icons/gi";
+import { CiUser } from "react-icons/ci";
 export default function Sidebar() {
   
 
@@ -35,16 +32,16 @@ export default function Sidebar() {
           <AccordionItem value="item-1" className="pb-4">
             <Link
               href="/dashboard"
-              className="flex items-center space-x-2 hover:underline"
+              className=" text-sm font-medium flex items-center space-x-2 hover:underline"
             >
-              <AiOutlineDashboard />
-              <span>Dash</span>
-            </Link>
+              <AiOutlineDashboard className="  fill-primary dark:fill-white"/>
+              <span>Dashboard</span>
+            </Link> 
           </AccordionItem>
           <AccordionItem value="item-2">  
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <LuSettings />
+                <IoSettings  className="fill-primary dark:fill-white"/>
                 <span>Administration</span>
               </div>
             </AccordionTrigger>
@@ -52,7 +49,7 @@ export default function Sidebar() {
               <>
               {userRole && userRole.includes('super-admin') && (
         <Link href="/societe" className="flex items-center p-2 space-x-3 rounded-md">
-          <BsBuildingFillGear />
+          <BsBuildingFillGear className="fill-primary dark:fill-white"/>
           &nbsp;Société
         </Link>
       )}
@@ -60,7 +57,7 @@ export default function Sidebar() {
                     href="/users"
                     className="flex items-center p-2 space-x-2 rounded-md"
                   >
-                   <FiUsers />
+                   <FaRegUser className="fill-primary dark:fill-white"/>
                     &nbsp;Utilisateurs
                   </Link>
                   </>
@@ -69,7 +66,7 @@ export default function Sidebar() {
           <AccordionItem value="item-8">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <FaFileAlt />
+                <FaFileAlt className="fill-primary dark:fill-white"/>
                 <span>Bon Commande</span>
               </div>
             </AccordionTrigger>
@@ -78,13 +75,13 @@ export default function Sidebar() {
                 href="/bonCommande "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;Liste
+                <FaListOl className="fill-primary dark:fill-white"/> &nbsp;Liste
               </Link>
               <Link
                     href="/bonCommande/add"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
-                    <IoMdAddCircleOutline />
+                    <IoMdAddCircleOutline className="fill-primary dark:fill-white"/>
                     &nbsp;Ajouter
                   </Link>
             </AccordionContent>
@@ -92,7 +89,7 @@ export default function Sidebar() {
           <AccordionItem value="item-9">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <FaFileAlt />
+                <FaFileAlt className="fill-primary dark:fill-white"/>
                 <span>Bon Livraison</span>
               </div>
             </AccordionTrigger>
@@ -101,13 +98,13 @@ export default function Sidebar() {
                 href="/bonLivraison "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;Liste
+                <FaListOl className="fill-primary dark:fill-white"/> &nbsp;Liste
               </Link>
               <Link
                     href="/bonLivraison/add"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
-                    <IoMdAddCircleOutline />
+                    <IoMdAddCircleOutline className="fill-primary dark:fill-white"/>
                     &nbsp;Ajouter
                   </Link>
             </AccordionContent>
@@ -115,7 +112,7 @@ export default function Sidebar() {
           <AccordionItem value="item-10">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <FaFileAlt />
+                <FaFileAlt className="fill-primary dark:fill-white"/>
                 <span>Bon Reception</span>
               </div>
             </AccordionTrigger>
@@ -124,13 +121,13 @@ export default function Sidebar() {
                 href="/bonReception "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;Liste
+                <FaListOl className="fill-primary dark:fill-white"/> &nbsp;Liste
               </Link>
               <Link
                     href="/bonReception/add"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
-                    <IoMdAddCircleOutline />
+                    <IoMdAddCircleOutline className="fill-primary dark:fill-white"/>
                     &nbsp;Ajouter
                   </Link>
             </AccordionContent>
@@ -138,7 +135,7 @@ export default function Sidebar() {
           <AccordionItem value="item-4">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-              <TfiUser />
+              <TfiUser className="fill-primary dark:fill-white"/>
                 <span>Clients</span>
               </div>
             </AccordionTrigger>
@@ -147,14 +144,14 @@ export default function Sidebar() {
                 href="/clients"
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;Liste
+                <FaListOl className="fill-primary dark:fill-white"/> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-6">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <TbTruckLoading />
+                <GiFactory className="fill-primary dark:fill-white"/>
                 <span>Fournisseurs</span>
               </div>
             </AccordionTrigger>
@@ -163,14 +160,14 @@ export default function Sidebar() {
                 href="/fournisseurs "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;Liste
+                <FaListOl className="fill-primary dark:fill-white"/> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-7">
             <AccordionTrigger>
               <div className="flex items-center space-x-2">
-                <FaBoxes />
+                <FaBoxes className="fill-primary dark:fill-white"/>
                 <span>Produits</span>
               </div>
             </AccordionTrigger>
@@ -179,26 +176,26 @@ export default function Sidebar() {
                 href="/produits "
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
-                <FaListOl /> &nbsp;Liste
+                <FaListOl className="fill-primary dark:fill-white"/> &nbsp;Liste
               </Link>
             </AccordionContent>
           </AccordionItem>
             <AccordionItem value="item-5" className="py-4">
             <Link
               href="/chauffeurs"
-              className="flex items-center space-x-2 hover:underline"
+              className=" text-sm font-medium flex items-center space-x-2 hover:underline"
             >
-            <GiSteeringWheel />
+            <GiSteeringWheel className="fill-primary dark:fill-white"/>
                 <span>Chauffeurs</span>
             </Link>
           </AccordionItem>
           <AccordionItem value="item-3" className="py-4">
             <Link
               href="/vehicles"
-              className="flex items-center space-x-2 hover:underline"
+              className="text-sm font-medium flex items-center space-x-2 hover:underline"
             >
-            <MdCommute />
-                <span>Vehicules(T)</span>
+            <MdCommute className="fill-primary dark:fill-white"/>
+                <span>Vehicules</span>
             </Link>
           </AccordionItem>
       
