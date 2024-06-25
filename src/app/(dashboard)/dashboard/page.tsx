@@ -19,6 +19,8 @@ import { BonReceptionData } from "@/types/bonReception";
 import { getBonReceptionsData } from "@/api/bonReception";
 import { PiMoneyWavyFill } from "react-icons/pi";
 import { GiHandTruck } from "react-icons/gi";
+import { set } from "date-fns";
+import Blueloading from "@/components/loading";
 
 
     
@@ -32,8 +34,12 @@ export default function Dash() {
   let totalClients:string=clientData?.length.toString()|| "0";
   const [activeClientsPercent, setActiveClientsPercent] = useState<string>('0%');
   const router = useRouter();
-
-
+  const [rateProfit, setRateProfit] = useState("0%");
+  const [rateVente, setRateVente] = useState("0%");
+  const [rateAchat, setRateAchat] = useState("0%");
+  const [venteData, setVenteData] = useState<any>();
+  const [achatData, setAchatData] = useState<any>();
+  const [loading, setLoading] = useState(true);
   const fetchBonLivraisonData = async () => {
 
     try{
@@ -56,8 +62,6 @@ export default function Dash() {
       error
     );
   }};
-
-
   const fetchProductsData = async () => {
     try {
       const data: ProduitData[] = await getProduitsData();
@@ -68,7 +72,6 @@ export default function Dash() {
       );
     }
   };
-
   const fetchClientData = async () => {
     try {
       const data: ApiClientData[] = await getClientsData();
@@ -103,8 +106,105 @@ export default function Dash() {
       setActiveClientsPercent(percent);
     } 
   };
+  const calculateMonthlyTotals = (data: any[], targetMonth: number, targetYear: number, dateField: string): number => {
+    const monthData = data.filter(item => {
+      const itemDate = new Date(item[dateField]);
+      return itemDate.getMonth() === targetMonth && itemDate.getFullYear() === targetYear;
+    });
+  
+    const total = monthData.reduce((acc, item) => acc + item.prixTotalTTC, 0);
+    return total;
+  };
+  const calculateMonthlyProfit = (bonLivraisonData: BonLivraisonData[], bonReceptionData: BonReceptionData[], targetMonth: number, targetYear: number): number => {
+    const totalVente = calculateMonthlyTotals(bonLivraisonData, targetMonth, targetYear, 'dateLivraison');
+    const totalAchat = calculateMonthlyTotals(bonReceptionData, targetMonth, targetYear, 'dateReception');
+  
+    return totalVente - totalAchat;
+  };
+  const calculateRate = (currentProfit: number, previousProfit: number): string => {
+    if (previousProfit === 0) return "N/A"; // Pour éviter la division par zéro
+    const Rate = ((currentProfit - previousProfit) / previousProfit) * 100;
+    return Rate.toFixed(2) + "%";
+  };
+  // Fonction pour construire les données de vente filtrées pour le mois et l'année sélectionnés
+  const buildVenteData = (
+    targetMonth: number,
+    targetYear: number
+  ): { dateLivraison: string; montantVente: number }[] => {
+    const groupedData: { [key: string]: number } = {};
+  
+    bonLivraisonData
+      .filter((bl) => {
+        const itemDate = new Date(bl.dateLivraison);
+        return itemDate.getMonth() === targetMonth && itemDate.getFullYear() === targetYear;
+      })
+      .forEach((bl) => {
+        const dateKey = new Date(bl.dateLivraison).toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "numeric",
+        });
+        if (!groupedData[dateKey]) {
+          groupedData[dateKey] = 0;
+        }
+        groupedData[dateKey] += bl.prixTotalTTC;
+      });
+  
+    const sortedData = Object.keys(groupedData)
+      .map(date => ({
+        dateLivraison: date,
+        montantVente: groupedData[date] as number
+      }))
+      .sort((a, b) => {
+        const [dayA, monthA] = a.dateLivraison.split("/").map(Number);
+        const [dayB, monthB] = b.dateLivraison.split("/").map(Number);
+        const dateA = new Date(targetYear, monthA - 1, dayA);
+        const dateB = new Date(targetYear, monthB - 1, dayB);
+        return dateA.getTime() - dateB.getTime();
+      });
+  
+    return sortedData;
+  };
+  
   
 
+  // Fonction pour construire les données d'achat filtrées pour le mois et l'année sélectionnés
+  const buildAchatData = (
+    targetMonth: number,
+    targetYear: number
+  ): { dateReception: string; montantAchat: number }[] => {
+    const groupedData: { [key: string]: number } = {};
+  
+    bonReceptionData
+      .filter((br) => {
+        const itemDate = new Date(br.dateReception);
+        return itemDate.getMonth() === targetMonth && itemDate.getFullYear() === targetYear;
+      })
+      .forEach((br) => {
+        const dateKey = new Date(br.dateReception).toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "numeric",
+        });
+        if (!groupedData[dateKey]) {
+          groupedData[dateKey] = 0;
+        }
+        groupedData[dateKey] += br.prixTotalTTC;
+      });
+  
+    const sortedData = Object.keys(groupedData)
+      .map(date => ({
+        dateReception: date,
+        montantAchat: groupedData[date] as number
+      }))
+      .sort((a, b) => {
+        const [dayA, monthA] = a.dateReception.split("/").map(Number);
+        const [dayB, monthB] = b.dateReception.split("/").map(Number);
+        const dateA = new Date(targetYear, monthA - 1, dayA);
+        const dateB = new Date(targetYear, monthB - 1, dayB);
+        return dateA.getTime() - dateB.getTime();
+      });
+  
+    return sortedData;
+  };
   const fetchDataAfterAuth = async () => {
     const isAuthenticated = auth(["admin", "super-admin", "user"]);
     if (isAuthenticated) {
@@ -115,30 +215,64 @@ export default function Dash() {
           fetchClientData(),
           fetchBonLivraisonData(),
           fetchBonReceptionData(),
+          
         ]);
-        
-        // Une fois que toutes les données sont chargées avec succès,
-        // exécuter le calcul des pourcentages des clients actifs
-        
-        
+          // Une fois que toutes les données sont chargées avec succès,
+        // exécuter le calcul des pourcentages 
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+        const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1; // Gérer le cas de janvier
+        const previousYear = previousMonth === 11 ? currentYear - 1 : currentYear;
+  
+        const currentMonthProfit = calculateMonthlyProfit(bonLivraisonData, bonReceptionData, currentMonth, currentYear);
+        const previousMonthProfit = calculateMonthlyProfit(bonLivraisonData, bonReceptionData, previousMonth, previousYear);
+        const rateProfit = calculateRate(currentMonthProfit, previousMonthProfit);
+        setRateProfit(rateProfit);
+
+        const  currentMothVente =calculateMonthlyTotals(bonLivraisonData, currentMonth, currentYear, 'dateLivraison');
+        const previousMonthVente =calculateMonthlyTotals(bonLivraisonData, previousMonth, previousYear, 'dateLivraison');
+        const rateVente=calculateRate(currentMothVente,previousMonthVente);
+        setRateVente(rateVente);
+
+
+        const  currentMothAchat =calculateMonthlyTotals(bonReceptionData, currentMonth, currentYear, 'dateReception');
+        const previousMonthAchat=calculateMonthlyTotals(bonReceptionData, previousMonth, previousYear, 'dateReception');
+        const rateAchat=calculateRate(currentMothAchat,previousMonthAchat);
+        setRateAchat(rateAchat);
+
+        calculateActiveClientsPercent();
+        setVenteData(buildVenteData(currentMonth, currentYear));
+        setAchatData(buildAchatData(currentMonth, currentYear));
+
+      
       } catch (error) {
         // En cas d'erreur lors du chargement des données, vous pouvez gérer l'erreur ici
         console.error("Erreur lors du chargement des données :", error);
       }
+      finally {
+      setLoading(false);
+    }
     } else {
       // Si l'utilisateur n'est pas authentifié, supprimer les données stockées et rediriger vers la page de connexion
       removeStorage();
       router.push("/login");
     }
+    
   };
  
 
-  useEffect(() => {
-    
-        fetchDataAfterAuth();
-        calculateActiveClientsPercent();
-  }, [totalClients]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchDataAfterAuth();
+    };
+    fetchData();
+  }, [loading]);
+
+ if (loading) {
+    return <><Blueloading/></>;
+  }
   return (
     
        <> 
@@ -146,7 +280,7 @@ export default function Dash() {
         <CardDataStats 
         title="Achat" 
         total={bonReceptionData.reduce((acc, br) => acc + br.prixTotalTTC, 0).toFixed(2) + " DT"}
-         rate="0.43%" 
+         rate={rateAchat}
          levelUp>
             <svg
             className="fill-primary dark:fill-white"
@@ -170,33 +304,33 @@ export default function Dash() {
         <CardDataStats
          title="Vente" 
         total={bonLivraisonData.reduce((acc, bl) => acc + bl.prixTotalTTC, 0).toFixed(3) + " DT"} 
-        rate="2.59%" 
+        rate={rateVente}
         levelUp>
          <GiHandTruck className="fill-primary dark:fill-white w-6 h-5 "/>
         </CardDataStats>
         <CardDataStats 
         title="Bénéfice"
          total={(bonLivraisonData.reduce((acc, bl) => acc + bl.prixTotalTTC, 0) - bonReceptionData.reduce((acc, br) => acc + br.prixTotalTTC, 0)).toFixed(3) + " DT"}
-         rate="4.35%" 
+         rate={rateProfit} 
          levelUp>
           <PiMoneyWavyFill className="fill-primary dark:fill-white w-6 h-5 "/>
         </CardDataStats>
-        <CardDataStats title="Clients" total={totalClients} rate={activeClientsPercent} levelDown>
+        <CardDataStats title="Clients" total={totalClients} rate={activeClientsPercent} rateMsg="Active/Mois" levelDown>
         <TfiUser className="fill-primary dark:fill-white w-6 h-5 " />
         </CardDataStats>
 
       
       </div>
+       
+     
+      <div className="mt-4">
+       {/* Assurez-vous que venteData et achatData sont correctement initialisés avant de passer à ChartOne */}
+  {venteData && achatData && venteData.length > 0 && achatData.length > 0 && (
+    <ChartOne venteData={venteData} achatData={achatData} />
+  )}
 
-
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-      <ChartOne />
-      <ChartTwo />
-      
-        
       </div>
     </>
   );
 };
-
 

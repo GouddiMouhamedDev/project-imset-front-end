@@ -4,6 +4,7 @@ interface CardDataStatsProps {
   title: string;
   total: string;
   rate: string;
+  rateMsg?: string;
   levelUp?: boolean;
   levelDown?: boolean;
   children: ReactNode;
@@ -16,6 +17,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   levelUp,
   levelDown,
   children,
+  rateMsg="Taux/Mois",
 }) => {
   return (
     <div className="rounded-sm border border-stroke  px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -38,7 +40,8 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
         >
           {rate}
           <br />
-          Active 
+          {rateMsg}
+          
           {levelUp && (
             <svg
               className="fill-meta-3"

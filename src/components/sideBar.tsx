@@ -35,7 +35,7 @@ export default function Sidebar() {
               className=" text-sm font-medium flex items-center space-x-2 hover:underline"
             >
               <AiOutlineDashboard className="  fill-primary dark:fill-white"/>
-              <span>Dashboard</span>
+              <span>Console</span>
             </Link> 
           </AccordionItem>
           <AccordionItem value="item-2">  

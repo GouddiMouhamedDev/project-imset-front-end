@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
-
 import { useTheme } from "next-themes";
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const ChartOne: React.FC = () => {
+interface ChartOneProps {
+  venteData: { dateLivraison: string; montantVente: number }[];
+  achatData: { dateReception: string; montantAchat: number }[];
+}
+
+const ChartOne: React.FC<ChartOneProps> = ({ venteData, achatData }) => {
   const { theme } = useTheme();
-  const [state, setState] = useState({
-    series: [
-      {
-        name: "Product One",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45, 22, 36, 25, 55, 36, 33, 56, 14, 47, 30, 64, 47, 15, 44, 27, 28, 29, 30],
-      },
-      {
-        name: "Product Two",
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 25, 36, 39, 51, 12, 25, 15, 14, 33, 15, 56, 14, 47, 20, 50, 23, 10, 44, 27, 28, 25, 40],
-      },
-    ],
+
+  // Generate a list of unique dates from venteData and achatData
+  const uniqueDates = Array.from(new Set([
+    ...venteData.map((item) => item.dateLivraison),
+    ...achatData.map((item) => item.dateReception),
+  ])).sort();
+
+  // Create series data that include all unique dates
+  const venteSeriesData = uniqueDates.map(date => {
+    const vente = venteData.find(item => item.dateLivraison === date);
+    return vente ? vente.montantVente : 0;
   });
 
+  const achatSeriesData = uniqueDates.map(date => {
+    const achat = achatData.find(item => item.dateReception === date);
+    return achat ? achat.montantAchat : 0;
+  });
+
+  const [series, setSeries] = useState([
+    {
+      name: "Vente",
+      data: venteSeriesData,
+    },
+    {
+      name: "Achat",
+      data: achatSeriesData,
+    },
+  ]);
+
   useEffect(() => {
-    // Fix pour Next.js SSR : assurez-vous que ReactApexChart est chargé du côté client
     const apexChartScript = document.createElement("script");
     apexChartScript.src = "https://cdn.jsdelivr.net/npm/apexcharts";
     document.body.appendChild(apexChartScript);
@@ -30,13 +49,23 @@ const ChartOne: React.FC = () => {
     };
   }, []);
 
-  const options: any = {
+  // Calculer le maximum pour l'axe y
+  const calculateMaxYAxis = (): number => {
+    return Math.max(Math.max(...venteSeriesData), Math.max(...achatSeriesData));
+  };
+
+  const options: ApexCharts.ApexOptions = {
     tooltip: {
-      enabled: true,
-      theme: theme === "system" ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme,
+      enabled: false ,
+      theme:
+        theme === "system"
+          ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light"
+          : theme,
     },
     legend: {
-      show: false,
+      show: true,
       position: "top",
       horizontalAlign: "left",
     },
@@ -46,7 +75,7 @@ const ChartOne: React.FC = () => {
       height: 335,
       type: "area",
       dropShadow: {
-        enabled: true,
+        enabled: false,
         color: "#623CEA14",
         top: 10,
         blur: 4,
@@ -82,7 +111,7 @@ const ChartOne: React.FC = () => {
     grid: {
       xaxis: {
         lines: {
-          show: true,
+          show: false,
         },
       },
       yaxis: {
@@ -92,7 +121,7 @@ const ChartOne: React.FC = () => {
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
     },
     markers: {
       size: 4,
@@ -110,13 +139,9 @@ const ChartOne: React.FC = () => {
     },
     xaxis: {
       type: "category",
-      categories: [
-        "01/05", "02/05", "03/05", "04/05", "05/05", "06/05", "07/05", "08/05", "09/05", "10/05",
-        "11/05", "12/05", "13/05", "14/05", "15/05", "16/05", "17/05", "18/05", "19/05", "20/05",
-        "21/05", "22/05", "23/05", "24/05", "25/05", "26/05", "27/05", "28/05", "29/05", "30/05"
-      ],
+      categories: uniqueDates,
       axisBorder: {
-        show: false,
+        show: true,
       },
       axisTicks: {
         show: false,
@@ -129,7 +154,7 @@ const ChartOne: React.FC = () => {
         },
       },
       min: 0,
-      max: 100,
+      max: calculateMaxYAxis(),
     },
   };
 
@@ -138,44 +163,15 @@ const ChartOne: React.FC = () => {
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
           <div className="flex min-w-47.5">
-            <span className="mr-2 mt-1 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-primary">Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-            </div>
-          </div>
-          <div className="flex min-w-47.5">
-            <span className="mr-2 mt-1 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex w-full max-w-45 justify-end">
-          <div className="inline-flex items-center rounded-md  p-1.5 ">
-            <button className="rounded px-3 py-1 text-xs font-medium shadow-card hover:shadow-card">
-              Day
-            </button>
-            <button className="rounded px-3 py-1 text-xs font-medium hover:shadow-card">
-              Week
-            </button>
-            <button className="rounded px-3 py-1 text-xs font-medium hover:shadow-card">
-              Month
-            </button>
+            <div className="w-full"></div>
           </div>
         </div>
       </div>
-
       <div>
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
             options={options}
-            series={state.series}
+            series={series}
             type="area"
             height={350}
             width={"100%"}
