@@ -26,7 +26,7 @@ export default function Produits() {
 
   const fetchData = async () => {
     try {
-      const isAuthenticated = auth(["admin", "super-admin"]);
+      const isAuthenticated = auth(["admin", "super-admin","user"]);
       if (!isAuthenticated) {
         removeStorage();
         router.push("/login");
@@ -115,9 +115,11 @@ export default function Produits() {
                     {header === "IdProduit" ? "ID Produit" : header}
                   </TableHead>
                 ))}
+                 {isAdmin && (
               <TableHead className="flex justify-center pt-3">
                 <AddProduitForm onSubmitSuccess={handleEditSuccess} />
               </TableHead>
+                 )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -131,10 +133,10 @@ export default function Produits() {
                         <span>{row[header]}</span>
                       </TableCell>
                     ))}
+                     {isAdmin && (
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
-                      <EditProduitForm _id={row._id} onSubmitSuccess={handleEditFormSubmit} />
-                      {isAdmin && (
+                      <EditProduitForm _id={row._id} onSubmitSuccess={handleEditFormSubmit} />                     
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]">
@@ -159,9 +161,10 @@ export default function Produits() {
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                      )}
+                    
                     </div>
                   </TableCell>
+                    )}
                 </TableRow>
               ))
             ) : (

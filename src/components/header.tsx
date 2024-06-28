@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { RiLogoutBoxFill } from "react-icons/ri";
-import { removeStorage } from "@/api/auth";
+import { auth, removeStorage } from "@/api/auth";
 import { CgProfile } from "react-icons/cg";
 import { useUser } from "@/contexts/UserContext";
 import { getUserInfoFromStorage } from "@/api/auth";
@@ -46,6 +46,11 @@ export default function Header() {
   };
 
   useEffect(() => {
+    const isAuthenticated = auth(["admin", "super-admin","user"]);
+    if (!isAuthenticated) {
+      removeStorage();
+      router.push("/login");
+}else{
     const fetchUserInfo = async () => {
       try {
         const userData = await getUserInfoFromStorage();
@@ -61,6 +66,7 @@ export default function Header() {
     };
 
     fetchUserInfo();
+  };
   }, [setUser]);
 
   const data = [

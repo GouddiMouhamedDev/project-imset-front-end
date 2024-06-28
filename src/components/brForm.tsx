@@ -366,7 +366,7 @@ export function BonReceptionForm() {
 
 
 const fetchDataAfterAuth = async () => {
-    const isAuthenticated = auth(["admin", "super-admin", "user"]);
+    const isAuthenticated = auth(["admin", "super-admin"]);
     if (isAuthenticated) {
       await Promise.all([fetchProductsData(), fetchFournisseurData(), fetchChauffeurData(), fetchVehicleData()]);
       const vendeurId = getUserInfoFromStorage()?._id;

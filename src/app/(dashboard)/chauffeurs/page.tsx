@@ -47,7 +47,7 @@ export default function Chauffeurs() {
 
   const fetchData = async () => {
     try {
-      const isAuthenticated = auth(["admin", "super-admin"]);
+      const isAuthenticated = auth(["admin", "super-admin","user"]);
       if (!isAuthenticated) {
         removeStorage();
         router.push("/login");
@@ -109,9 +109,11 @@ export default function Chauffeurs() {
                 .map((header) => (
                   <TableHead key={header}>{header}</TableHead>
                 ))}
+                  {isAdmin && (
               <TableHead className="flex justify-center pt-3 border-spacing-1">
                 <AddChauffeurForm onSubmitSuccess={handleEditSuccess} />
               </TableHead>
+                  )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -125,13 +127,14 @@ export default function Chauffeurs() {
                         <span>{row[header]}</span>
                       </TableCell>
                     ))}
+                      {isAdmin && (
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                       <EditChauffeurForm
                         chauffeurId={row.Id}
                         onSubmitSuccess={handleEditSuccess}
                       />
-                      {isAdmin && (
+                    
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <div className="w-4 h-4 cursor-pointer hover:scale-[1.1]" >  <MdDeleteForever /></div>
@@ -159,9 +162,10 @@ export default function Chauffeurs() {
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                      )}
+                     
                     </div>
                   </TableCell>
+                   )}
                 </TableRow>
               ))
             ) : (

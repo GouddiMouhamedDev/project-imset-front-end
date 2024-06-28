@@ -118,12 +118,14 @@ export default function Vehicles() {
                 .map((header) => (
                   <TableHead key={header}>{header}</TableHead>
                 ))}
+                {isAdmin && (
               <TableHead className="flex justify-center pt-3 border-spacing-1">
                 <AddVehicleForm
                  onSubmitSuccess={handleEditSuccess}/>
                
                   
               </TableHead>
+                )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -137,13 +139,14 @@ export default function Vehicles() {
                         <span>{row[header]}</span>
                       </TableCell>
                     ))}
+                      {isAdmin && (
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                     <EditVehicleForm
             vehicleId={row.Id}
             onSubmitSuccess={handleEditSuccess}
           />
-                      {isAdmin && (
+                    
                        
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -174,9 +177,10 @@ export default function Vehicles() {
                             </AlertDialogContent>
                           </AlertDialog>
                         
-                      )}
+                    
                     </div>
                   </TableCell>
+                    )}
                 </TableRow>
               ))
             ) : (

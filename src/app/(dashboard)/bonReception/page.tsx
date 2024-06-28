@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, removeStorage } from "@/api/auth";
+import { auth, getUserInfoFromStorage, removeStorage } from "@/api/auth";
 import { getBonReceptionsData, deleteBonReceptionData } from "@/api/bonReception"; // Mise à jour de l'import
 import BlueLoading from "@/components/loading";
 import SearchBar from "@/components/searchBar";
@@ -19,7 +19,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const columnHeaders = Object.keys(bonReceptionsData && bonReceptionsData.length > 0 ? bonReceptionsData[0] : {}); // Mise à jour de la variable
-  
+  const userRole = getUserInfoFromStorage()?.role;
   const fetchData = async () => {
     try {
       const isAuthenticated = auth(["admin", "super-admin", "user"]);
@@ -95,11 +95,13 @@ export default function BonReceptions() { // Changement du nom de la fonction
                 <TableHead key={header}>
                   {header}</TableHead>
               ))}
+              {userRole && ['super-admin', 'admin'].includes(userRole) && (
               <TableHead >
               <Link className="flex justify-center items-center " href={"/bonReception/add"}>{/* Mise à jour du lien */}
                   <IoIosAddCircle className=" w-4 h-4 cursor-pointer hover:scale-[1.2] " />
                 </Link>
                 </TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -114,6 +116,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
                       <span>{row[header]}</span>
                       </TableCell>
                   ))}
+                  {userRole && ['super-admin', 'admin'].includes(userRole) && (
                   <TableCell className="flex place-content-center">
                     <div className="flex flex-row space-x-2">
                       {/** link to edit bon Livraison page */}
@@ -146,6 +149,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
                       </AlertDialog>
                     </div>
                   </TableCell>
+                  )}
                 </TableRow>
               ))
             ) : (

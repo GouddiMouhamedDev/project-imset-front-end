@@ -60,6 +60,18 @@
   }
 
   .dark {
+    .apexcharts-menu {
+      @apply bg-gray-900; /* Exemple de classes Tailwind pour un fond gris sombre et texte blanc */
+    }
+    .apexcharts-menu-item.exportSVG:hover {
+      @apply bg-gray-700; /* Changer la couleur de fond au survol en gris plus foncé */
+    }
+    .apexcharts-menu-item.exportPNG:hover {
+      @apply bg-gray-700; /* Changer la couleur de fond au survol en gris plus foncé */
+    }
+    .apexcharts-menu-item.exportCSV:hover {
+      @apply bg-gray-700; /* Changer la couleur de fond au survol en gris plus foncé */
+    }
     
     --background: 229 41% 4%;
     --foreground: 229 23% 99%;
