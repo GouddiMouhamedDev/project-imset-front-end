@@ -50,7 +50,7 @@ export default function BonLivraisons() {
           };
         }));
         
-        setBonLivraisonsData(formattedData);
+        setBonLivraisonsData(formattedData.reverse());
       }
     } catch (error) {
       console.error(

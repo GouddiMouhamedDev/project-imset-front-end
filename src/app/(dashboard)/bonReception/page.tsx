@@ -50,7 +50,7 @@ export default function BonReceptions() { // Changement du nom de la fonction
           };
         }));
         
-        setBonReceptionsData(formattedData); // Mise à jour de la variable
+        setBonReceptionsData(formattedData.reverse()); // Mise à jour de la variable
       }
     } catch (error) {
       console.error(

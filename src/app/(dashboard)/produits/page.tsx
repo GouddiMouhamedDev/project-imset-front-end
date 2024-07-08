@@ -42,7 +42,7 @@ export default function Produits() {
           prixUnitaireTTC: produit.prixUnitaireTTC,
           
         }));
-        setProduitsData(formattedData);
+        setProduitsData(formattedData.reverse());
       }
     } catch (error) {
       console.error(

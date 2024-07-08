@@ -65,7 +65,7 @@ export default function Vehicles() {
             Matricule: item.Matricule
           })
         );
-        setVehiclesData(VehicleFormatedData);
+        setVehiclesData(VehicleFormatedData.reverse());
       }
     } catch (error) {
       console.error(

@@ -35,7 +35,7 @@ export default function Clients() {
           Destination: client.destination,
           Solde: client.solde,
         }));
-        setClientsData(formatedData);
+        setClientsData(formatedData.reverse());
       
     } catch (error) {
       console.error(

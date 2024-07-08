@@ -38,7 +38,7 @@ export default function Fournisseurs() {
           Telephone: fournisseur.telephone,
           IdentifiantFiscale: fournisseur.identifiantFiscaleFournisseur,
         }));
-        setFournisseursData(formattedData);
+        setFournisseursData(formattedData.reverse());
       }
     } catch (error) {
       console.error(

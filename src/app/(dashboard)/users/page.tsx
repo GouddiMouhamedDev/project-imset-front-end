@@ -54,7 +54,7 @@ export default function Users() {
         Email: item.email,
         Rôle: item.role,
       }));
-      setUsersData(formatedData);
+      setUsersData(formatedData.reverse());
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des données :",

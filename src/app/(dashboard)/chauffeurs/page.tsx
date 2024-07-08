@@ -62,7 +62,7 @@ export default function Chauffeurs() {
             
             })
           );
-        setChauffeursData(chauffeurFormatedData);
+        setChauffeursData(chauffeurFormatedData.reverse());
       }
     } catch (error) {
       console.error(
