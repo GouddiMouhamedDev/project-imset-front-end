@@ -1,15 +1,9 @@
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  // Autres options spécifiques à next-pwa
-});
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
-  output: 'export',
+  output: 'export', // Nécessaire pour l'exportation statique
   assetPrefix: process.env.NODE_ENV === 'production' ? '/nom-du-repo/' : '',
   basePath: '/nom-du-repo',
   trailingSlash: true, // Assure que chaque route se termine par un slash pour GitHub Pages
@@ -18,4 +12,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;

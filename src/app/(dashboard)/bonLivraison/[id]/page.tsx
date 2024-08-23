@@ -1,4 +1,4 @@
-"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
