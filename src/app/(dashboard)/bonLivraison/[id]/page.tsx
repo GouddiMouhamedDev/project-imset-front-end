@@ -1,4 +1,4 @@
-
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -45,7 +45,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { createBonLivraison, getOneBonLivraisonData, updateBonLivraisonData } from "@/api/bonLivraison";
+import {
+  createBonLivraison,
+  getOneBonLivraisonData,
+  updateBonLivraisonData,
+} from "@/api/bonLivraison";
 import { format, getDate } from "date-fns";
 
 import { MdDeleteForever } from "react-icons/md";
@@ -62,21 +66,13 @@ import { Card } from "@/components/ui/card";
 import { Icons } from "@/components/icons";
 import { BonLivraisonData } from "@/types/bonLivraison";
 
-export async function generateStaticParams() {
-  const ids = ["1", "2", "3"]; // Remplacez par vos vrais IDs
-  return ids.map((id) => ({ id }));
-}
 
 //********************************************************************************************************************************/
 export default function EditBonLivraisonForm({
-        params: { id },
-      }: {
-        params: { id: string };
-     
-    }) {
-
-
-
+  params: { id },
+}: {
+  params: { id: string };
+}) {
   const FormSchema = z.object({
     client: z.string({
       required_error: "Veuillez sélectionner un client.",
@@ -97,23 +93,23 @@ export default function EditBonLivraisonForm({
     ),
     destination: z.string().optional(),
     chauffeur: z.string({
-        required_error: "Veuillez sélectionner un chauffeurs.",
-      }),
-      vehicule: z.string({
-        required_error: "Veuillez sélectionner un vehicules.",
-      }),
-
-
-
+      required_error: "Veuillez sélectionner un chauffeurs.",
+    }),
+    vehicule: z.string({
+      required_error: "Veuillez sélectionner un vehicules.",
+    }),
   });
 
-
   const [vehiclesData, setVehiclesData] = useState<VehicleFormatedData[]>([]);
-  const [chauffeursData, setChauffeursData] = useState<ChauffeurFormatedData[]>([]);
+  const [chauffeursData, setChauffeursData] = useState<ChauffeurFormatedData[]>(
+    []
+  );
   const [clientsData, setClientsData] = useState<SlecteClientData[]>([]);
   const [produitData, setProduitData] = useState<ProduitData[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<ProduitDataBon[]>([]);
-  const [isLoading, setIsLoading] =useState<boolean>(false);
+  const [selectedProducts, setSelectedProducts] = useState<ProduitDataBon[]>(
+    []
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const [destination, setDestination] = useState("");
   const [prixTotalHT, setPrixTotalHT] = useState(0);
@@ -123,7 +119,6 @@ export default function EditBonLivraisonForm({
   const [isHTActive, setIsHTActive] = useState(false);
   const [msg, setMsg] = useState<string>("");
   const [vendeurId, setVendeurId] = useState("");
-
 
   const calculateTotals = (products: ProduitDataBon[]) => {
     let prixTotalHT = 0;
@@ -223,7 +218,6 @@ export default function EditBonLivraisonForm({
     setIsLoading(true);
     try {
       // Créer un tableau pour stocker les produits
-    
 
       const produitsData = selectedProducts.map((product) => ({
         produit: product.produit, // Utiliser l'ID du produit
@@ -241,7 +235,7 @@ export default function EditBonLivraisonForm({
         dateLivraison: format(data.date, "yyyy-MM-dd"), // Utiliser la date sélectionnée
         client: data.client, // Ajouter l'ID du client
         chauffeur: data.chauffeur, // Ajouter l'ID du chauffeur
-        vehicle:data.vehicule, // Ajouter l'ID du véhicule
+        vehicle: data.vehicule, // Ajouter l'ID du véhicule
         userId: vendeurId, // Utiliser l'ID du vendeur
         destination: destination, // Utiliser la destination sélectionnée
         produits: produitsData, // Utiliser le tableau de produits
@@ -251,8 +245,7 @@ export default function EditBonLivraisonForm({
       };
       // Envoyer les données au backend
 
-
-      await updateBonLivraisonData(id,bonLivraisonData).then((response) => {
+      await updateBonLivraisonData(id, bonLivraisonData).then((response) => {
         const msg = (response as { data: { msg: string } }).data.msg;
 
         if ((response as { status: number }).status === 200) {
@@ -349,86 +342,78 @@ export default function EditBonLivraisonForm({
         CIN: chauffeur.cin,
       }));
       setChauffeursData(formatedData);
-    }catch (error) {
+    } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des données des chauffeurs :",
         error
       );
     }
-    };
+  };
 
-
-    const fetchVehicleData = async () => {  
-        try{
-        const data: VehicleData[] = await getVehiclesData();
-        const formatedData: VehicleFormatedData[] = data.map((vehicle) => ({
-          Id: vehicle._id,
-          Matricule: vehicle.Matricule,
-        }));
-        setVehiclesData(formatedData);
-    }catch (error) {
+  const fetchVehicleData = async () => {
+    try {
+      const data: VehicleData[] = await getVehiclesData();
+      const formatedData: VehicleFormatedData[] = data.map((vehicle) => ({
+        Id: vehicle._id,
+        Matricule: vehicle.Matricule,
+      }));
+      setVehiclesData(formatedData);
+    } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des données des véhicules :",
         error
       );
     }
-};
+  };
 
-const fetchOneBonLivraison = async (id: string) => {
+  const fetchOneBonLivraison = async (id: string) => {
     try {
-        const data: BonLivraisonData = await getOneBonLivraisonData(id);
-        
-        // Formater les données de la livraison pour remplir le formulaire et le tableau des produits
-        const formattedProducts = data.produits.map((produit) => ({
-            idProduit: produit.idProduit,
-            nom: produit.nomProduit,
-            prixUnitaireHT: produit.prixUnitaireHT,
-            prixUnitaireTTC: produit.prixUnitaireTTC,
-            tauxTVA: produit.tauxTVA,
-            quantite: produit.quantite,
-            montantTTC: produit.montantTTC,
-            produit: produit._id 
-        }));
-        
-        // Mettre à jour les états
-        setSelectedProducts(formattedProducts);
-        setDestination(data.destination);
-        setPrixTotalHT(data.prixTotalHT);
-        setPrixTotalTTC(data.prixTotalTTC);
-        setMontantTVA(data.montantTVA);
-        
-        // Mettre à jour les valeurs du formulaire
-        form.setValue("client", data.client);
-        form.setValue("date", new Date(data.dateLivraison));
-        form.setValue("produits", formattedProducts);
-        form.setValue("destination", data.destination);
-        form.setValue("chauffeur", data.chauffeur);
-        form.setValue("vehicule", data.vehicle);
-        
+      const data: BonLivraisonData = await getOneBonLivraisonData(id);
+
+      // Formater les données de la livraison pour remplir le formulaire et le tableau des produits
+      const formattedProducts = data.produits.map((produit) => ({
+        idProduit: produit.idProduit,
+        nom: produit.nomProduit,
+        prixUnitaireHT: produit.prixUnitaireHT,
+        prixUnitaireTTC: produit.prixUnitaireTTC,
+        tauxTVA: produit.tauxTVA,
+        quantite: produit.quantite,
+        montantTTC: produit.montantTTC,
+        produit: produit._id,
+      }));
+
+      // Mettre à jour les états
+      setSelectedProducts(formattedProducts);
+      setDestination(data.destination);
+      setPrixTotalHT(data.prixTotalHT);
+      setPrixTotalTTC(data.prixTotalTTC);
+      setMontantTVA(data.montantTVA);
+
+      // Mettre à jour les valeurs du formulaire
+      form.setValue("client", data.client);
+      form.setValue("date", new Date(data.dateLivraison));
+      form.setValue("produits", formattedProducts);
+      form.setValue("destination", data.destination);
+      form.setValue("chauffeur", data.chauffeur);
+      form.setValue("vehicule", data.vehicle);
     } catch (error) {
-        console.error(
-            "Une erreur s'est produite lors de la récupération des données d'un bon de livraison :",
-            error
-        );
+      console.error(
+        "Une erreur s'est produite lors de la récupération des données d'un bon de livraison :",
+        error
+      );
     }
-};
+  };
 
-
-
-
-
-
-      
-const fetchDataAfterAuth = async () => {
+  const fetchDataAfterAuth = async () => {
     const isAuthenticated = auth(["admin", "super-admin", "user"]);
     if (isAuthenticated) {
       await Promise.all([
-        fetchProductsData(), 
-        fetchClientData(), 
+        fetchProductsData(),
+        fetchClientData(),
         fetchChauffeurData(),
-         fetchVehicleData(),
-         fetchOneBonLivraison(id),
-        ]);
+        fetchVehicleData(),
+        fetchOneBonLivraison(id),
+      ]);
       const vendeurId = getUserInfoFromStorage()?._id;
       setVendeurId(vendeurId!);
     } else {
@@ -438,8 +423,6 @@ const fetchDataAfterAuth = async () => {
   };
 
   useEffect(() => {
-  
-
     fetchDataAfterAuth();
   }, []);
 
@@ -513,131 +496,131 @@ const fetchDataAfterAuth = async () => {
                 </FormItem>
               )}
             />
-        
+
             {/**vehicule  */}
             <FormField
-  control={form.control}
-  name="vehicule"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>vehicule : </FormLabel>
-      <Popover>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                "w-[250px] justify-between",
-                !field.value && "text-muted-foreground"
-              )}
-            >
-              {field.value
-                ? vehiclesData.find(
-                    (vehicle) => vehicle.Matricule === field.value
-                  )?.Matricule
-                : "Sélectionner un vehicule"}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Recherche vehicule..." />
-            <CommandEmpty>Aucun vehicule trouvé.</CommandEmpty>
-            <CommandGroup>
-              {vehiclesData.map((vehicle) => (
-                <CommandItem
-                  value={vehicle.Matricule} // Utilisation du matricule comme valeur
-                  key={vehicle.Id}
-                  onSelect={() => {
-                    form.setValue("vehicule", vehicle.Matricule); // Mise à jour avec le matricule
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      vehicle.Matricule === field.value
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  {vehicle.Matricule}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
+              control={form.control}
+              name="vehicule"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>vehicule : </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[250px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? vehiclesData.find(
+                                (vehicle) => vehicle.Matricule === field.value
+                              )?.Matricule
+                            : "Sélectionner un vehicule"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Recherche vehicule..." />
+                        <CommandEmpty>Aucun vehicule trouvé.</CommandEmpty>
+                        <CommandGroup>
+                          {vehiclesData.map((vehicle) => (
+                            <CommandItem
+                              value={vehicle.Matricule} // Utilisation du matricule comme valeur
+                              key={vehicle.Id}
+                              onSelect={() => {
+                                form.setValue("vehicule", vehicle.Matricule); // Mise à jour avec le matricule
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  vehicle.Matricule === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {vehicle.Matricule}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
 
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/**chauffeur */}
             <FormField
-  control={form.control}
-  name="chauffeur"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>chauffeur : </FormLabel>
-      <Popover>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                "w-[250px] justify-between",
-                !field.value && "text-muted-foreground"
-              )}
-            >
-              {field.value
-                ? chauffeursData.find(
-                    (chauffeur) => chauffeur.Nom === field.value
-                  )?.Nom
-                : "Sélectionner un chauffeur"}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Recherche chauffeur..." />
-            <CommandEmpty>Aucun chauffeur trouvé.</CommandEmpty>
-            <CommandGroup>
-              {chauffeursData.map((chauffeur) => (
-                <CommandItem
-                  value={chauffeur.Nom} // Utilisation du nom comme valeur
-                  key={chauffeur.Id}
-                  onSelect={() => {
-                    form.setValue("chauffeur", chauffeur.Nom); // Mise à jour avec le nom
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      chauffeur.Nom === field.value
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  {chauffeur.Nom}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
+              control={form.control}
+              name="chauffeur"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>chauffeur : </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[250px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? chauffeursData.find(
+                                (chauffeur) => chauffeur.Nom === field.value
+                              )?.Nom
+                            : "Sélectionner un chauffeur"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Recherche chauffeur..." />
+                        <CommandEmpty>Aucun chauffeur trouvé.</CommandEmpty>
+                        <CommandGroup>
+                          {chauffeursData.map((chauffeur) => (
+                            <CommandItem
+                              value={chauffeur.Nom} // Utilisation du nom comme valeur
+                              key={chauffeur.Id}
+                              onSelect={() => {
+                                form.setValue("chauffeur", chauffeur.Nom); // Mise à jour avec le nom
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  chauffeur.Nom === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {chauffeur.Nom}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
 
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="space-y-4">
-                {/**destination clients  */}
-                <FormField
+            {/**destination clients  */}
+            <FormField
               control={form.control}
               name="destination"
               render={({ field }) => (
@@ -790,20 +773,20 @@ const fetchDataAfterAuth = async () => {
           />
         </FormItem>
         <div className="flex justify-end pr-5">
-  <Button type="submit" disabled={isLoading}  className=" w-32 flex items-center justify-center s">
-    {isLoading ? (
-      <>
-        <Icons.spinner className="mr-2 h-4 w-30 animate-spin" />
-      
-      </>
-    ) : (
-      "Enregistrer"
-    )}
-  </Button>
-</div>
-
-
-
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className=" w-32 flex items-center justify-center s"
+          >
+            {isLoading ? (
+              <>
+                <Icons.spinner className="mr-2 h-4 w-30 animate-spin" />
+              </>
+            ) : (
+              "Enregistrer"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );
@@ -904,7 +887,6 @@ function SelectedProductsTable({
                 type="button"
                 onClick={() => onDeleteProduct(index)}
                 className="w-4 h-4 cursor-pointer hover:scale-[1.1]"
-                
               >
                 <MdDeleteForever />
               </button>
