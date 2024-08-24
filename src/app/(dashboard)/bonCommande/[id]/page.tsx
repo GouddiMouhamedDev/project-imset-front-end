@@ -53,6 +53,9 @@ import { Icons } from "@/components/icons";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { BonCommandeData } from "@/types/bonCommande";
+import { GetServerSideProps } from "next";
+
+
 
 export default function EditBonCommande({
   params: { id },
