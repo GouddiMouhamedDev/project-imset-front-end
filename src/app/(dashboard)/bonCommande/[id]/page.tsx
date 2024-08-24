@@ -58,39 +58,18 @@ import { BonCommandeData } from "@/types/bonCommande";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 // Fonction pour définir les chemins dynamiques
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function generateStaticParams() {
   // Exemple: récupère tous les IDs pour générer les chemins
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/bonCommande/ids`
-  );
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/bonCommande/ids`);
   const ids = await res.json();
 
   // Crée des chemins basés sur les IDs
   const paths = ids.map((id: string) => ({
-    params: { id },
+    id,
   }));
 
-  return {
-    paths,
-    fallback: "blocking", // Utiliser 'blocking' pour générer les pages à la demande
-  };
-};
-
-// Fonction pour obtenir les props pour chaque page dynamique
-export const getStaticProps: GetStaticProps = async (context) => {
-  const { id } = context.params!;
-
-  // Récupère les données pour l'ID spécifique
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/bonCommande/${id}`
-  );
-  const data = await res.json();
-
-  return {
-    props: { data },
-    revalidate: 10, // Optionnel: Revalidation toutes les 10 secondes
-  };
-};
+  return paths;
+}
 
 export default function EditBonCommande({
   params: { id },
