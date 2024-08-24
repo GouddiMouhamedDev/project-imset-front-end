@@ -66,6 +66,8 @@ import { Card } from "@/components/ui/card";
 import { Icons } from "@/components/icons";
 import { BonLivraisonData } from "@/types/bonLivraison";
 
+import { GetServerSideProps } from "next";
+
 
 //********************************************************************************************************************************/
 export default function EditBonLivraisonForm({
