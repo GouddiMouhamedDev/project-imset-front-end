@@ -55,21 +55,6 @@ import { Card } from "@/components/ui/card";
 import { BonCommandeData } from "@/types/bonCommande";
 
 
-import { GetStaticPaths, GetStaticProps } from "next";
-
-// Fonction pour définir les chemins dynamiques
-export async function generateStaticParams() {
-  // Exemple: récupère tous les IDs pour générer les chemins
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/bonCommande/ids`);
-  const ids = await res.json();
-
-  // Crée des chemins basés sur les IDs
-  const paths = ids.map((id: string) => ({
-    id,
-  }));
-
-  return paths;
-}
 
 export default function EditBonCommande({
   params: { id },
